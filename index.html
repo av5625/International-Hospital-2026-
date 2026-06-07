@@ -1,0 +1,1724 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>المستشفى الدولي | رعاية طبية عالمية</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: { cairo: ['Cairo', 'sans-serif'] },
+                    colors: {
+                        primary: { DEFAULT: '#0F2B5B', 50: '#E6EBF3', 100: '#C2CFE0', 500: '#0F2B5B', 600: '#0C2248' },
+                        teal: { DEFAULT: '#00B5A8', 500: '#00B5A8', 600: '#009188' },
+                        gold: { DEFAULT: '#D4AF37', 500: '#D4AF37' }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        :root { --bg: #ffffff; --bg2: #f8fafc; --card: #ffffff; --text: #0f172a; --text2: #475569; --border: #e2e8f0; }
+        .dark { --bg: #0f172a; --bg2: #1e293b; --card: #1e293b; --text: #f1f5f9; --text2: #cbd5e1; --border: #334155; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Cairo', sans-serif; background: var(--bg); color: var(--text); transition: 0.3s; }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-thumb { background: #0F2B5B; border-radius: 3px; }
+        .glass { background: rgba(255,255,255,0.85); backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.3); }
+        .dark .glass { background: rgba(15,23,42,0.85); border-color: rgba(255,255,255,0.1); }
+        .btn-main { background: linear-gradient(135deg, #0F2B5B, #1a3a6a); color: white; padding: 12px 28px; border-radius: 12px; font-weight: 700; transition: all 0.3s; display: inline-flex; align-items: center; gap: 8px; border: none; cursor: pointer; }
+        .btn-main:hover { transform: translateY(-2px); box-shadow: 0 10px 30px rgba(15,43,91,0.3); }
+        .btn-teal { background: linear-gradient(135deg, #00B5A8, #009188); color: white; padding: 12px 28px; border-radius: 12px; font-weight: 700; transition: all 0.3s; display: inline-flex; align-items: center; gap: 8px; border: none; cursor: pointer; }
+        .btn-teal:hover { transform: translateY(-2px); box-shadow: 0 10px 30px rgba(0,181,168,0.3); }
+        .card-hover { transition: all 0.4s; }
+        .card-hover:hover { transform: translateY(-6px); box-shadow: 0 20px 40px rgba(0,0,0,0.1); }
+        .reveal { opacity: 0; transform: translateY(30px); transition: all 0.7s ease; }
+        .reveal.active { opacity: 1; transform: translateY(0); }
+        .page { display: none; animation: fadeIn 0.4s; }
+        .page.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes float { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
+        .animate-float { animation: float 5s ease-in-out infinite; }
+        .loader { width: 50px; height: 50px; border: 3px solid rgba(255,255,255,0.3); border-top-color: #fff; border-radius: 50%; animation: spin 1s linear infinite; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .modal-overlay { position: fixed; inset: 0; z-index: 2000; background: rgba(0,0,0,0.7); display: none; align-items: center; justify-content: center; padding: 20px; }
+        .modal-overlay.active { display: flex; }
+        .modal-content { background: var(--bg); border-radius: 20px; max-width: 550px; width: 100%; max-height: 90vh; overflow-y: auto; }
+        .form-input { width: 100%; padding: 12px 16px; border: 2px solid var(--border); border-radius: 10px; background: var(--card); color: var(--text); font-family: 'Cairo'; transition: 0.3s; }
+        .form-input:focus { outline: none; border-color: #00B5A8; box-shadow: 0 0 0 3px rgba(0,181,168,0.1); }
+        .mobile-menu { position: fixed; top: 0; right: -100%; width: 300px; height: 100vh; background: var(--bg); z-index: 1500; transition: 0.4s; overflow-y: auto; box-shadow: -5px 0 30px rgba(0,0,0,0.2); }
+        .mobile-menu.active { right: 0; }
+        .mobile-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 1400; display: none; }
+        .mobile-overlay.active { display: block; }
+        .loading-screen { position: fixed; inset: 0; z-index: 9999; background: linear-gradient(135deg, #0F2B5B, #00B5A8); display: flex; align-items: center; justify-content: center; transition: 0.5s; }
+        .loading-screen.hidden { opacity: 0; visibility: hidden; }
+        .search-overlay { position: fixed; inset: 0; z-index: 2000; background: rgba(15,43,91,0.97); display: none; align-items: center; justify-content: center; padding: 20px; }
+        .search-overlay.active { display: flex; }
+        .lightbox { position: fixed; inset: 0; z-index: 1000; background: rgba(0,0,0,0.95); display: none; align-items: center; justify-content: center; }
+        .lightbox.active { display: flex; }
+        .toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%) translateY(100px); z-index: 3000; transition: 0.5s; opacity: 0; }
+        .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+        .dept-card { background: var(--card); border: 1px solid var(--border); border-radius: 16px; overflow: hidden; transition: 0.4s; cursor: pointer; }
+        .dept-card:hover { transform: translateY(-5px); box-shadow: 0 15px 35px rgba(0,0,0,0.1); border-color: #00B5A8; }
+        .doctor-card { background: var(--card); border: 1px solid var(--border); border-radius: 16px; overflow: hidden; transition: 0.4s; cursor: pointer; }
+        .doctor-card:hover { transform: translateY(-5px); box-shadow: 0 15px 35px rgba(0,0,0,0.1); }
+        .doctor-card img { transition: 0.5s; }
+        .doctor-card:hover img { transform: scale(1.05); }
+        .news-card { background: var(--card); border: 1px solid var(--border); border-radius: 16px; overflow: hidden; transition: 0.4s; cursor: pointer; }
+        .news-card:hover { transform: translateY(-5px); box-shadow: 0 15px 35px rgba(0,0,0,0.1); }
+        .news-card img { transition: 0.5s; }
+        .news-card:hover img { transform: scale(1.05); }
+        .testimonial-card { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 24px; position: relative; }
+        .testimonial-card::before { content: '"'; position: absolute; top: 10px; right: 20px; font-size: 60px; color: #00B5A8; opacity: 0.2; font-family: serif; line-height: 1; }
+        .accordion-item { border: 1px solid var(--border); border-radius: 12px; margin-bottom: 10px; overflow: hidden; background: var(--card); }
+        .accordion-header { padding: 16px 20px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; font-weight: 700; }
+        .accordion-body { max-height: 0; overflow: hidden; transition: 0.4s; padding: 0 20px; }
+        .accordion-item.active .accordion-body { max-height: 300px; padding-bottom: 16px; }
+        .accordion-icon { transition: 0.3s; }
+        .accordion-item.active .accordion-icon { transform: rotate(180deg); }
+        .timeline-item { position: relative; padding-right: 30px; }
+        .timeline-item::before { content: ''; position: absolute; right: 0; top: 6px; width: 12px; height: 12px; border-radius: 50%; background: #00B5A8; border: 3px solid var(--bg); box-shadow: 0 0 0 3px #00B5A8; }
+        .timeline-item::after { content: ''; position: absolute; right: 5px; top: 18px; width: 2px; height: calc(100% - 12px); background: linear-gradient(180deg, #00B5A8, transparent); }
+        .timeline-item:last-child::after { display: none; }
+        .float-btn { position: fixed; bottom: 20px; right: 20px; z-index: 50; width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; box-shadow: 0 4px 15px rgba(0,0,0,0.2); transition: 0.3s; cursor: pointer; border: none; }
+        .float-btn:hover { transform: scale(1.1); }
+        .back-to-top { bottom: 80px; background: #00B5A8; opacity: 0; transform: translateY(20px); transition: 0.3s; }
+        .back-to-top.visible { opacity: 1; transform: translateY(0); }
+        .badge { display: inline-block; padding: 4px 14px; border-radius: 100px; font-size: 0.8rem; font-weight: 600; }
+        .badge-teal { background: rgba(0,181,168,0.1); color: #00B5A8; }
+        .badge-gold { background: rgba(212,175,55,0.1); color: #D4AF37; }
+        .badge-primary { background: rgba(15,43,91,0.1); color: #0F2B5B; }
+        .dark .badge-primary { background: rgba(15,43,91,0.3); color: #60a5fa; }
+        .section-divider { width: 50px; height: 3px; background: linear-gradient(90deg, #0F2B5B, #00B5A8); border-radius: 2px; margin: 12px auto; }
+        .parallax-bg { background-attachment: fixed; background-position: center; background-size: cover; }
+        .img-skeleton { background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%); background-size: 200% 100%; animation: shimmer 1.5s infinite; }
+        @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+    </style>
+</head>
+<body class="font-cairo">
+
+    <!-- Loading -->
+    <div class="loading-screen" id="loadingScreen">
+        <div class="text-center text-white">
+            <div class="loader mx-auto mb-4"></div>
+            <h2 class="text-xl font-bold">المستشفى الدولي</h2>
+            <p class="text-sm opacity-70">جاري التحميل...</p>
+        </div>
+    </div>
+
+    <!-- Search -->
+    <div class="search-overlay" id="searchOverlay">
+        <div class="w-full max-w-xl px-4">
+            <div class="relative mb-6">
+                <input type="text" id="searchInput" placeholder="ابحث عن طبيب، قسم، خدمة..." class="w-full bg-white/10 border border-white/20 rounded-xl py-4 px-5 text-white text-lg placeholder-white/50 focus:outline-none focus:border-white/50">
+                <button onclick="closeSearch()" class="absolute left-4 top-1/2 -translate-y-1/2 text-white/70">
+                    <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+                </button>
+            </div>
+            <div id="searchResults" class="max-h-80 overflow-y-auto space-y-2"></div>
+        </div>
+        <button onclick="closeSearch()" class="absolute top-6 right-6 text-white/70">
+            <svg width="32" height="32" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+        </button>
+    </div>
+
+    <!-- Mobile Menu -->
+    <div class="mobile-overlay" id="mobileOverlay" onclick="closeMobileMenu()"></div>
+    <div class="mobile-menu" id="mobileMenu">
+        <div class="p-5 border-b border-gray-200 dark:border-gray-700 flex justify-between items-center">
+            <span class="font-bold text-lg text-primary-500 dark:text-white">القائمة</span>
+            <button onclick="closeMobileMenu()" class="p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg">
+                <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+            </button>
+        </div>
+        <div class="p-4 space-y-1" id="mobileMenuItems"></div>
+    </div>
+
+    <!-- Booking Modal -->
+    <div class="modal-overlay" id="bookingModal" onclick="if(event.target===this)closeBookingModal()">
+        <div class="modal-content shadow-2xl">
+            <div class="p-5 border-b border-gray-200 dark:border-gray-700 flex justify-between items-center">
+                <h3 class="text-xl font-bold text-primary-500 dark:text-white">حجز موعد</h3>
+                <button onclick="closeBookingModal()" class="p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg">
+                    <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+                </button>
+            </div>
+            <div class="p-5">
+                <form onsubmit="handleBooking(event)">
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium mb-1 text-gray-600 dark:text-gray-400">القسم الطبي</label>
+                            <select id="bookingDept" class="form-input" onchange="updateBookingDoctors()">
+                                <option value="">اختر القسم</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium mb-1 text-gray-600 dark:text-gray-400">الطبيب</label>
+                            <select id="bookingDoctor" class="form-input">
+                                <option value="">اختر الطبيب</option>
+                            </select>
+                        </div>
+                        <div class="grid grid-cols-2 gap-3">
+                            <div>
+                                <label class="block text-sm font-medium mb-1 text-gray-600 dark:text-gray-400">التاريخ</label>
+                                <input type="date" class="form-input" required>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium mb-1 text-gray-600 dark:text-gray-400">الوقت</label>
+                                <select class="form-input">
+                                    <option>09:00 ص</option><option>10:00 ص</option><option>11:00 ص</option>
+                                    <option>12:00 م</option><option>01:00 م</option><option>02:00 م</option>
+                                    <option>03:00 م</option><option>04:00 م</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium mb-1 text-gray-600 dark:text-gray-400">الاسم الكامل</label>
+                            <input type="text" class="form-input" placeholder="أدخل اسمك" required>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium mb-1 text-gray-600 dark:text-gray-400">رقم الهاتف</label>
+                            <input type="tel" class="form-input" placeholder="0500000000" required>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium mb-1 text-gray-600 dark:text-gray-400">ملاحظات</label>
+                            <textarea class="form-input" rows="2" placeholder="أي ملاحظات..."></textarea>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn-teal w-full mt-5 justify-center">تأكيد الحجز</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Lightbox -->
+    <div class="lightbox" id="lightbox" onclick="if(event.target===this)closeLightbox()">
+        <button onclick="closeLightbox()" class="absolute top-5 right-5 text-white/70 hover:text-white z-10">
+            <svg width="32" height="32" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+        </button>
+        <button onclick="prevImage()" class="absolute right-4 top-1/2 -translate-y-1/2 text-white/70 hover:text-white p-2">
+            <svg width="40" height="40" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6M21 12H3"/></svg>
+        </button>
+        <button onclick="nextImage()" class="absolute left-4 top-1/2 -translate-y-1/2 text-white/70 hover:text-white p-2">
+            <svg width="40" height="40" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6M3 12h18"/></svg>
+        </button>
+        <img id="lightboxImg" src="" alt="" class="max-w-[90%] max-h-[85%] object-contain rounded-lg">
+    </div>
+
+    <!-- Toast -->
+    <div class="toast" id="toast">
+        <div class="bg-primary-500 text-white px-6 py-3 rounded-xl shadow-2xl flex items-center gap-2">
+            <svg width="20" height="20" fill="none" stroke="#00B5A8" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>
+            <span id="toastMsg">تمت العملية بنجاح</span>
+        </div>
+    </div>
+
+    <!-- Floating Buttons -->
+    <div class="fixed bottom-5 right-5 z-50 flex flex-col gap-3">
+        <a href="https://wa.me/966500000000" target="_blank" class="float-btn bg-green-500 hover:bg-green-600">
+            <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7A8.38 8.38 0 0 1 4 11.5a8.5 8.5 0 0 1 15-3.8A8.38 8.38 0 0 1 21 11.5z"/></svg>
+        </a>
+        <a href="tel:920000000" class="float-btn bg-primary-500 hover:bg-primary-600">
+            <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+        </a>
+        <button onclick="scrollToTop()" id="backToTopBtn" class="float-btn back-to-top">
+            <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
+        </button>
+    </div>
+
+    <!-- Navbar -->
+    <nav id="navbar" class="fixed top-0 left-0 right-0 z-40 transition-all duration-300">
+        <div class="glass border-b border-white/10">
+            <div class="max-w-7xl mx-auto px-4 lg:px-8">
+                <div class="flex items-center justify-between h-18 py-3">
+                    <a href="#home" class="flex items-center gap-2 group">
+                        <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-primary-500 to-teal-500 flex items-center justify-center shadow-lg">
+                            <svg width="20" height="20" fill="none" stroke="white" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+                        </div>
+                        <div class="hidden sm:block">
+                            <h1 class="font-bold text-lg text-primary-500 dark:text-white leading-tight">المستشفى الدولي</h1>
+                            <p class="text-xs text-gray-500 dark:text-gray-400">رعاية طبية عالمية</p>
+                        </div>
+                    </a>
+
+                    <div class="hidden lg:flex items-center gap-1">
+                        <a href="#home" class="px-3 py-2 rounded-lg text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-primary-500 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800 transition-all">الرئيسية</a>
+                        <a href="#about" class="px-3 py-2 rounded-lg text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-primary-500 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800 transition-all">من نحن</a>
+                        <a href="#departments" class="px-3 py-2 rounded-lg text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-primary-500 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800 transition-all">الأقسام</a>
+                        <a href="#doctors" class="px-3 py-2 rounded-lg text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-primary-500 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800 transition-all">الأطباء</a>
+                        <a href="#services" class="px-3 py-2 rounded-lg text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-primary-500 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800 transition-all">الخدمات</a>
+                        <a href="#news" class="px-3 py-2 rounded-lg text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-primary-500 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800 transition-all">الأخبار</a>
+                        <a href="#contact" class="px-3 py-2 rounded-lg text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-primary-500 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800 transition-all">اتصل بنا</a>
+                    </div>
+
+                    <div class="flex items-center gap-2">
+                        <button onclick="openSearch()" class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-600 dark:text-gray-400 transition-colors">
+                            <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+                        </button>
+                        <button onclick="toggleTheme()" class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-600 dark:text-gray-400 transition-colors">
+                            <svg class="hidden dark:block" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+                            <svg class="block dark:hidden" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+                        </button>
+                        <button onclick="toggleLang()" class="px-3 py-1.5 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 text-sm font-bold text-primary-500 dark:text-teal-400 border border-gray-200 dark:border-gray-700 transition-colors">EN</button>
+                        <button onclick="openBookingModal()" class="hidden sm:flex btn-teal text-sm py-2 px-4">
+                            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" class="ml-1"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                            احجز موعد
+                        </button>
+                        <button onclick="openMobileMenu()" class="lg:hidden p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-600 dark:text-gray-400">
+                            <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h18M3 6h18M3 18h18"/></svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main id="mainContent" class="pt-[72px]">
+
+        <!-- HOME -->
+        <div id="page-home" class="page active">
+            <!-- Hero -->
+            <section class="relative min-h-[90vh] flex items-center overflow-hidden">
+                <div class="absolute inset-0">
+                    <img src="https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?w=1920&q=80" alt="Hospital" class="w-full h-full object-cover" loading="eager">
+                    <div class="absolute inset-0 bg-gradient-to-l from-primary-500/95 via-primary-500/80 to-primary-500/40"></div>
+                </div>
+                <div class="absolute top-20 left-20 w-72 h-72 bg-teal-500/20 rounded-full blur-3xl animate-float"></div>
+                
+                <div class="relative max-w-7xl mx-auto px-4 lg:px-8 py-20 w-full">
+                    <div class="max-w-2xl">
+                        <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 border border-white/20 text-white/90 text-sm mb-6 backdrop-blur-sm">
+                            <span class="w-2 h-2 rounded-full bg-teal-400 animate-pulse"></span>
+                            رعاية طبية عالمية المستوى
+                        </div>
+                        <h1 class="text-4xl md:text-6xl font-bold text-white leading-tight mb-6">
+                            رعاية صحية<br>
+                            <span class="text-teal-300">بمعايير عالمية</span>
+                        </h1>
+                        <p class="text-lg md:text-xl text-white/80 mb-8 leading-relaxed">
+                            نقدم أحدث التقنيات الطبية مع نخبة من أفضل الأطباء والاستشاريين في بيئة علاجية متكاملة.
+                        </p>
+                        <div class="flex flex-wrap gap-4">
+                            <button onclick="openBookingModal()" class="bg-white text-primary-500 px-6 py-3.5 rounded-xl font-bold hover:bg-teal-50 transition-all hover:scale-105 shadow-xl flex items-center gap-2">
+                                <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+                                احجز موعدك
+                            </button>
+                            <a href="#departments" class="border-2 border-white/30 text-white px-6 py-3.5 rounded-xl font-bold hover:bg-white/10 transition-all flex items-center gap-2 backdrop-blur-sm">
+                                <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M4.9 19.1C1 15.2 1 8.8 4.9 4.9M9 12a3 3 0 1 0 6 0 3 3 0 1 0-6 0M19.1 4.9C23 8.8 23 15.1 19.1 19.1"/></svg>
+                                استكشف خدماتنا
+                            </a>
+                        </div>
+                        <div class="grid grid-cols-3 gap-6 mt-12">
+                            <div class="text-center">
+                                <div class="text-3xl font-bold text-white" id="counter1">0</div>
+                                <div class="text-sm text-white/70">طبيب متخصص</div>
+                            </div>
+                            <div class="text-center">
+                                <div class="text-3xl font-bold text-white" id="counter2">0</div>
+                                <div class="text-sm text-white/70">قسم طبي</div>
+                            </div>
+                            <div class="text-center">
+                                <div class="text-3xl font-bold text-white" id="counter3">0</div>
+                                <div class="text-sm text-white/70">مريض سنوياً</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Features -->
+            <section class="relative -mt-16 z-10 px-4 mb-20">
+                <div class="max-w-7xl mx-auto">
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                        <div class="glass rounded-2xl p-6 text-center card-hover">
+                            <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-primary-500 to-primary-700 flex items-center justify-center mx-auto mb-3 text-white">
+                                <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                            </div>
+                            <h3 class="font-bold text-primary-500 dark:text-white mb-1">طوارئ 24/7</h3>
+                            <p class="text-sm text-gray-500 dark:text-gray-400">خدمة طوارئ على مدار الساعة</p>
+                        </div>
+                        <div class="glass rounded-2xl p-6 text-center card-hover">
+                            <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-teal-500 to-teal-700 flex items-center justify-center mx-auto mb-3 text-white">
+                                <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12h20M2 12l5-5m-5 5l5 5"/></svg>
+                            </div>
+                            <h3 class="font-bold text-primary-500 dark:text-white mb-1">أحدث التقنيات</h3>
+                            <p class="text-sm text-gray-500 dark:text-gray-400">تجهيزات طبية متطورة</p>
+                        </div>
+                        <div class="glass rounded-2xl p-6 text-center card-hover">
+                            <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-gold-500 to-yellow-600 flex items-center justify-center mx-auto mb-3 text-white">
+                                <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                            </div>
+                            <h3 class="font-bold text-primary-500 dark:text-white mb-1">جودة معتمدة</h3>
+                            <p class="text-sm text-gray-500 dark:text-gray-400">شهادات دولية في الجودة</p>
+                        </div>
+                        <div class="glass rounded-2xl p-6 text-center card-hover">
+                            <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-rose-500 to-rose-700 flex items-center justify-center mx-auto mb-3 text-white">
+                                <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/></svg>
+                            </div>
+                            <h3 class="font-bold text-primary-500 dark:text-white mb-1">فريق متخصص</h3>
+                            <p class="text-sm text-gray-500 dark:text-gray-400">نخبة من أفضل الأطباء</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- About -->
+            <section class="py-20 px-4">
+                <div class="max-w-7xl mx-auto">
+                    <div class="grid lg:grid-cols-2 gap-12 items-center">
+                        <div class="reveal">
+                            <span class="badge badge-teal mb-4">من نحن</span>
+                            <h2 class="text-3xl md:text-4xl font-bold text-primary-500 dark:text-white mb-5 leading-tight">
+                                نقدم لكم رعاية صحية<br>
+                                <span class="text-teal-500">بأعلى معايير الجودة</span>
+                            </h2>
+                            <p class="text-gray-600 dark:text-gray-400 leading-relaxed mb-5">
+                                المستشفى الدولي هو وجهتكم الأولى للحصول على رعاية صحية شاملة ومتميزة. نجمع بين الخبرة الطبية العميقة والتقنيات الحديثة.
+                            </p>
+                            <p class="text-gray-600 dark:text-gray-400 leading-relaxed mb-6">
+                                منذ تأسيسنا، نسعى لأن نكون الخيار الأول للمرضى الباحثين عن التميز في الرعاية الصحية، من خلال توفير بيئة علاجية آمنة ومريحة.
+                            </p>
+                            <div class="flex flex-wrap gap-4">
+                                <a href="#about" class="btn-main">المزيد عنا</a>
+                                <a href="#contact" class="px-5 py-3 rounded-xl border-2 border-primary-500 text-primary-500 dark:border-teal-400 dark:text-teal-400 font-semibold hover:bg-primary-500 hover:text-white transition-all">تواصل معنا</a>
+                            </div>
+                        </div>
+                        <div class="reveal relative">
+                            <div class="rounded-3xl overflow-hidden shadow-2xl">
+                                <img src="https://images.unsplash.com/photo-1579684385127-1ef15d508118?w=800&q=80" alt="Medical Team" class="w-full h-[450px] object-cover" loading="lazy">
+                                <div class="absolute bottom-4 right-4 left-4">
+                                    <div class="glass rounded-xl p-3 flex items-center gap-3">
+                                        <div class="w-10 h-10 rounded-full bg-teal-500 flex items-center justify-center text-white">
+                                            <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="7"/><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"/></svg>
+                                        </div>
+                                        <div>
+                                            <div class="font-bold text-white text-sm">معتمد دولياً</div>
+                                            <div class="text-xs text-white/80">JCI & ISO 9001</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Stats -->
+            <section class="py-20 px-4 relative overflow-hidden">
+                <div class="absolute inset-0 bg-gradient-to-br from-primary-500 to-primary-700"></div>
+                <div class="max-w-7xl mx-auto relative">
+                    <div class="text-center mb-12 reveal">
+                        <h2 class="text-3xl font-bold text-white mb-3">إنجازاتنا في أرقام</h2>
+                        <div class="w-16 h-1 bg-gradient-to-r from-teal-400 to-gold-500 mx-auto rounded-full"></div>
+                    </div>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-5" id="statsGrid">
+                        <div class="glass rounded-2xl p-6 text-center reveal">
+                            <div class="text-4xl font-bold text-white mb-1" data-count="25">0</div>
+                            <div class="text-white/80 text-sm">قسم طبي متخصص</div>
+                        </div>
+                        <div class="glass rounded-2xl p-6 text-center reveal">
+                            <div class="text-4xl font-bold text-white mb-1" data-count="150">0</div>
+                            <div class="text-white/80 text-sm">طبيب واستشاري</div>
+                        </div>
+                        <div class="glass rounded-2xl p-6 text-center reveal">
+                            <div class="text-4xl font-bold text-white mb-1" data-count="50000">0</div>
+                            <div class="text-white/80 text-sm">مريض سنوياً</div>
+                        </div>
+                        <div class="glass rounded-2xl p-6 text-center reveal">
+                            <div class="text-4xl font-bold text-white mb-1" data-count="98">0</div>
+                            <div class="text-white/80 text-sm">نسبة الرضا %</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Departments -->
+            <section class="py-20 px-4 bg-gray-50 dark:bg-gray-900/50">
+                <div class="max-w-7xl mx-auto">
+                    <div class="text-center mb-12 reveal">
+                        <span class="badge badge-teal mb-3">أقسامنا الطبية</span>
+                        <h2 class="text-3xl md:text-4xl font-bold text-primary-500 dark:text-white mb-3">تخصصات طبية شاملة</h2>
+                        <p class="text-gray-600 dark:text-gray-400 max-w-xl mx-auto">نقدم مجموعة واسعة من التخصصات الطبية لتغطية جميع احتياجاتك الصحية</p>
+                        <div class="section-divider"></div>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5" id="deptGrid"></div>
+                    <div class="text-center mt-10">
+                        <a href="#departments" class="btn-main">
+                            عرض جميع الأقسام
+                            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                        </a>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Doctors -->
+            <section class="py-20 px-4">
+                <div class="max-w-7xl mx-auto">
+                    <div class="text-center mb-12 reveal">
+                        <span class="badge badge-gold mb-3">نخبة الأطباء</span>
+                        <h2 class="text-3xl md:text-4xl font-bold text-primary-500 dark:text-white mb-3">أطباؤنا المميزون</h2>
+                        <p class="text-gray-600 dark:text-gray-400 max-w-xl mx-auto">فريق طبي متخصص يضم نخبة من الاستشاريين والأخصائيين</p>
+                        <div class="section-divider"></div>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5" id="doctorGrid"></div>
+                    <div class="text-center mt-10">
+                        <a href="#doctors" class="btn-teal">
+                            عرض جميع الأطباء
+                            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                        </a>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Services -->
+            <section class="py-20 px-4 bg-gray-50 dark:bg-gray-900/50">
+                <div class="max-w-7xl mx-auto">
+                    <div class="text-center mb-12 reveal">
+                        <span class="badge badge-primary mb-3">خدماتنا</span>
+                        <h2 class="text-3xl md:text-4xl font-bold text-primary-500 dark:text-white mb-3">خدمات طبية متكاملة</h2>
+                        <p class="text-gray-600 dark:text-gray-400 max-w-xl mx-auto">نوفر لكم مجموعة شاملة من الخدمات الطبية بأحدث التقنيات</p>
+                        <div class="section-divider"></div>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="serviceGrid"></div>
+                </div>
+            </section>
+
+            <!-- Testimonials -->
+            <section class="py-20 px-4">
+                <div class="max-w-7xl mx-auto">
+                    <div class="text-center mb-12 reveal">
+                        <span class="badge badge-teal mb-3">آراء المرضى</span>
+                        <h2 class="text-3xl md:text-4xl font-bold text-primary-500 dark:text-white mb-3">ماذا يقول مرضانا</h2>
+                        <div class="section-divider"></div>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-5" id="testimonialGrid"></div>
+                </div>
+            </section>
+
+            <!-- News -->
+            <section class="py-20 px-4 bg-gray-50 dark:bg-gray-900/50">
+                <div class="max-w-7xl mx-auto">
+                    <div class="text-center mb-12 reveal">
+                        <span class="badge badge-primary mb-3">الأخبار الطبية</span>
+                        <h2 class="text-3xl md:text-4xl font-bold text-primary-500 dark:text-white mb-3">آخر الأخبار والمقالات</h2>
+                        <div class="section-divider"></div>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6" id="newsGrid"></div>
+                </div>
+            </section>
+
+            <!-- Partners -->
+            <section class="py-16 px-4 border-t border-gray-200 dark:border-gray-800">
+                <div class="max-w-7xl mx-auto text-center">
+                    <h3 class="text-xl font-bold text-primary-500 dark:text-white mb-8">شركاؤنا واعتماداتنا</h3>
+                    <div class="flex flex-wrap justify-center items-center gap-10 opacity-60">
+                        <div class="text-xl font-bold text-primary-500">JCI</div>
+                        <div class="text-xl font-bold text-primary-500">ISO 9001</div>
+                        <div class="text-xl font-bold text-primary-500">CBAHI</div>
+                        <div class="text-xl font-bold text-primary-500">HIMSS</div>
+                        <div class="text-xl font-bold text-primary-500">CAP</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- CTA -->
+            <section class="py-24 px-4 relative overflow-hidden">
+                <div class="absolute inset-0 bg-gradient-to-r from-primary-500 via-primary-600 to-teal-600"></div>
+                <div class="absolute inset-0 opacity-10" style="background-image: radial-gradient(circle, white 1px, transparent 1px); background-size: 30px 30px;"></div>
+                <div class="max-w-3xl mx-auto text-center relative reveal">
+                    <h2 class="text-3xl md:text-5xl font-bold text-white mb-5">احجز موعدك الآن</h2>
+                    <p class="text-lg text-white/80 mb-8">فريقنا الطبي جاهز لتقديم أفضل الرعاية الصحية لك ولعائلتك</p>
+                    <div class="flex flex-wrap justify-center gap-4">
+                        <button onclick="openBookingModal()" class="bg-white text-primary-500 px-8 py-4 rounded-xl font-bold hover:bg-teal-50 transition-all hover:scale-105 shadow-xl flex items-center gap-2">
+                            <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+                            احجز موعد
+                        </button>
+                        <a href="tel:920000000" class="border-2 border-white/30 text-white px-8 py-4 rounded-xl font-bold hover:bg-white/10 transition-all flex items-center gap-2">
+                            <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+                            920000000
+                        </a>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- ABOUT -->
+        <div id="page-about" class="page">
+            <section class="relative py-28 px-4 bg-gradient-to-br from-primary-500 to-primary-700">
+                <div class="max-w-7xl mx-auto text-center relative">
+                    <h1 class="text-4xl md:text-5xl font-bold text-white mb-4">من نحن</h1>
+                    <p class="text-lg text-white/80 max-w-xl mx-auto">قصة تميز استمرت لعقود في تقديم الرعاية الصحية العالمية</p>
+                </div>
+            </section>
+            <section class="py-20 px-4">
+                <div class="max-w-7xl mx-auto">
+                    <div class="grid lg:grid-cols-2 gap-12 items-center mb-20">
+                        <div class="reveal">
+                            <span class="badge badge-teal mb-4">قصتنا</span>
+                            <h2 class="text-3xl font-bold text-primary-500 dark:text-white mb-5">رحلة تميز استمرت لأكثر من 30 عاماً</h2>
+                            <p class="text-gray-600 dark:text-gray-400 leading-relaxed mb-5">تأسس المستشفى الدولي عام 1994م برؤية طموحة لتقديم رعاية صحية عالمية المستوى. بدأنا كمستشفى صغير ونمونا لنصبح واحداً من أكبر المراكز الطبية المتكاملة.</p>
+                            <div class="grid grid-cols-2 gap-4">
+                                <div class="flex items-center gap-3"><div class="w-8 h-8 rounded bg-teal-100 dark:bg-teal-900/30 flex items-center justify-center text-teal-600"><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg></div><span class="text-sm font-medium text-gray-700 dark:text-gray-300">اعتماد دولي</span></div>
+                                <div class="flex items-center gap-3"><div class="w-8 h-8 rounded bg-teal-100 dark:bg-teal-900/30 flex items-center justify-center text-teal-600"><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg></div><span class="text-sm font-medium text-gray-700 dark:text-gray-300">تقنيات متطورة</span></div>
+                                <div class="flex items-center gap-3"><div class="w-8 h-8 rounded bg-teal-100 dark:bg-teal-900/30 flex items-center justify-center text-teal-600"><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg></div><span class="text-sm font-medium text-gray-700 dark:text-gray-300">كوادر متميزة</span></div>
+                                <div class="flex items-center gap-3"><div class="w-8 h-8 rounded bg-teal-100 dark:bg-teal-900/30 flex items-center justify-center text-teal-600"><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg></div><span class="text-sm font-medium text-gray-700 dark:text-gray-300">رعاية شاملة</span></div>
+                            </div>
+                        </div>
+                        <div class="reveal">
+                            <div class="grid grid-cols-2 gap-3">
+                                <img src="https://images.unsplash.com/photo-1587351021759-3e566b2af12c?w=400&q=80" class="rounded-2xl shadow-lg w-full h-52 object-cover" loading="lazy" alt="Hospital">
+                                <img src="https://images.unsplash.com/photo-1516549655169-df83a0774514?w=400&q=80" class="rounded-2xl shadow-lg w-full h-52 object-cover mt-6" loading="lazy" alt="Medical">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="max-w-3xl mx-auto reveal">
+                        <h3 class="text-2xl font-bold text-primary-500 dark:text-white mb-10 text-center">محطات مهمة في رحلتنا</h3>
+                        <div class="space-y-6">
+                            <div class="timeline-item reveal"><div class="bg-white dark:bg-gray-800 rounded-xl p-5 shadow border border-gray-100 dark:border-gray-700"><span class="text-teal-500 font-bold text-sm">1994</span><h4 class="font-bold text-lg text-primary-500 dark:text-white mt-1">التأسيس</h4><p class="text-gray-600 dark:text-gray-400 mt-1 text-sm">افتتاح المستشفى بسعة 50 سريراً مع 5 تخصصات طبية أساسية</p></div></div>
+                            <div class="timeline-item reveal"><div class="bg-white dark:bg-gray-800 rounded-xl p-5 shadow border border-gray-100 dark:border-gray-700"><span class="text-teal-500 font-bold text-sm">2005</span><h4 class="font-bold text-lg text-primary-500 dark:text-white mt-1">التوسع الأول</h4><p class="text-gray-600 dark:text-gray-400 mt-1 text-sm">توسعة المستشفى ليصبح 200 سرير وإضافة 10 تخصصات جديدة</p></div></div>
+                            <div class="timeline-item reveal"><div class="bg-white dark:bg-gray-800 rounded-xl p-5 shadow border border-gray-100 dark:border-gray-700"><span class="text-teal-500 font-bold text-sm">2015</span><h4 class="font-bold text-lg text-primary-500 dark:text-white mt-1">الاعتماد الدولي</h4><p class="text-gray-600 dark:text-gray-400 mt-1 text-sm">حصول المستشفى على اعتماد JCI الدولي للجودة والسلامة</p></div></div>
+                            <div class="timeline-item reveal"><div class="bg-white dark:bg-gray-800 rounded-xl p-5 shadow border border-gray-100 dark:border-gray-700"><span class="text-teal-500 font-bold text-sm">2024</span><h4 class="font-bold text-lg text-primary-500 dark:text-white mt-1">التحول الرقمي</h4><p class="text-gray-600 dark:text-gray-400 mt-1 text-sm">إطلاق منصة الرعاية الصحية الرقمية المتكاملة والذكاء الاصطناعي</p></div></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- VISION -->
+        <div id="page-vision" class="page">
+            <section class="relative py-28 px-4 bg-gradient-to-br from-primary-500 to-primary-700">
+                <div class="max-w-7xl mx-auto text-center relative">
+                    <h1 class="text-4xl md:text-5xl font-bold text-white mb-4">الرؤية والرسالة</h1>
+                    <p class="text-lg text-white/80 max-w-xl mx-auto">قيمنا الأساسية التي نسير عليها</p>
+                </div>
+            </section>
+            <section class="py-20 px-4">
+                <div class="max-w-7xl mx-auto">
+                    <div class="grid lg:grid-cols-2 gap-8 mb-16">
+                        <div class="reveal bg-gradient-to-br from-primary-500 to-primary-700 rounded-3xl p-8 text-white relative overflow-hidden">
+                            <div class="w-14 h-14 rounded-xl bg-white/20 flex items-center justify-center mb-5"><svg width="28" height="28" fill="none" stroke="white" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></div>
+                            <h2 class="text-2xl font-bold mb-3">رؤيتنا</h2>
+                            <p class="text-white/90 leading-relaxed">أن نكون المؤسسة الصحية الرائدة في المنطقة، المعترف بها عالمياً بتقديم رعاية صحية متميزة ومبتكرة تفوق توقعات مرضانا.</p>
+                        </div>
+                        <div class="reveal bg-gradient-to-br from-teal-500 to-teal-700 rounded-3xl p-8 text-white relative overflow-hidden">
+                            <div class="w-14 h-14 rounded-xl bg-white/20 flex items-center justify-center mb-5"><svg width="28" height="28" fill="none" stroke="white" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg></div>
+                            <h2 class="text-2xl font-bold mb-3">رسالتنا</h2>
+                            <p class="text-white/90 leading-relaxed">تقديم رعاية صحية شاملة ومتكاملة بأعلى معايير الجودة العالمية، من خلال كوادر طبية متميزة وتقنيات حديثة.</p>
+                        </div>
+                    </div>
+                    <div class="text-center mb-10 reveal"><h2 class="text-3xl font-bold text-primary-500 dark:text-white mb-3">قيمنا الأساسية</h2><div class="section-divider"></div></div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
+                        <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow border border-gray-100 dark:border-gray-700 text-center card-hover reveal">
+                            <div class="w-14 h-14 rounded-xl bg-rose-100 dark:bg-rose-900/20 flex items-center justify-center mx-auto mb-4 text-rose-500"><svg width="28" height="28" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></div>
+                            <h3 class="font-bold text-lg text-primary-500 dark:text-white mb-1">الإنسانية</h3>
+                            <p class="text-gray-500 dark:text-gray-400 text-sm">نضع إنسانية المريض في قلب كل ما نقوم به</p>
+                        </div>
+                        <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow border border-gray-100 dark:border-gray-700 text-center card-hover reveal">
+                            <div class="w-14 h-14 rounded-xl bg-blue-100 dark:bg-blue-900/20 flex items-center justify-center mx-auto mb-4 text-blue-500"><svg width="28" height="28" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
+                            <h3 class="font-bold text-lg text-primary-500 dark:text-white mb-1">الجودة</h3>
+                            <p class="text-gray-500 dark:text-gray-400 text-sm">نلتزم بأعلى معايير الجودة في كل خدمة</p>
+                        </div>
+                        <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow border border-gray-100 dark:border-gray-700 text-center card-hover reveal">
+                            <div class="w-14 h-14 rounded-xl bg-teal-100 dark:bg-teal-900/20 flex items-center justify-center mx-auto mb-4 text-teal-500"><svg width="28" height="28" fill="none" stroke="currentColor" stroke-width="2"><path d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/></svg></div>
+                            <h3 class="font-bold text-lg text-primary-500 dark:text-white mb-1">الابتكار</h3>
+                            <p class="text-gray-500 dark:text-gray-400 text-sm">نسعى دائماً لتبني أحدث التقنيات</p>
+                        </div>
+                        <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow border border-gray-100 dark:border-gray-700 text-center card-hover reveal">
+                            <div class="w-14 h-14 rounded-xl bg-gold-100 dark:bg-yellow-900/20 flex items-center justify-center mx-auto mb-4 text-yellow-600"><svg width="28" height="28" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/></svg></div>
+                            <h3 class="font-bold text-lg text-primary-500 dark:text-white mb-1">الشراكة</h3>
+                            <p class="text-gray-500 dark:text-gray-400 text-sm">نعمل مع مرضانا كشركاء في الرحلة العلاجية</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- DEPARTMENTS -->
+        <div id="page-departments" class="page">
+            <section class="relative py-28 px-4 bg-gradient-to-br from-primary-500 to-primary-700">
+                <div class="max-w-7xl mx-auto text-center relative">
+                    <h1 class="text-4xl md:text-5xl font-bold text-white mb-4">الأقسام الطبية</h1>
+                    <p class="text-lg text-white/80 max-w-xl mx-auto">تخصصات طبية شاملة تغطي جميع احتياجاتك الصحية</p>
+                </div>
+            </section>
+            <section class="py-20 px-4">
+                <div class="max-w-7xl mx-auto">
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5" id="allDeptGrid"></div>
+                </div>
+            </section>
+        </div>
+
+        <!-- DEPT DETAIL -->
+        <div id="page-dept-detail" class="page">
+            <section class="relative py-28 px-4 bg-gradient-to-br from-primary-500 to-primary-700" id="deptDetailHeader">
+                <div class="max-w-7xl mx-auto text-center relative">
+                    <h1 class="text-4xl md:text-5xl font-bold text-white mb-3" id="deptDetailTitle">القسم</h1>
+                    <p class="text-lg text-white/80" id="deptDetailDesc">وصف القسم</p>
+                </div>
+            </section>
+            <section class="py-20 px-4">
+                <div class="max-w-7xl mx-auto" id="deptDetailContent"></div>
+            </section>
+        </div>
+
+        <!-- DOCTORS -->
+        <div id="page-doctors" class="page">
+            <section class="relative py-28 px-4 bg-gradient-to-br from-primary-500 to-primary-700">
+                <div class="max-w-7xl mx-auto text-center relative">
+                    <h1 class="text-4xl md:text-5xl font-bold text-white mb-4">الأطباء والاستشاريون</h1>
+                    <p class="text-lg text-white/80 max-w-xl mx-auto">نخبة من أفضل الأطباء والاستشاريين في مختلف التخصصات</p>
+                </div>
+            </section>
+            <section class="py-20 px-4">
+                <div class="max-w-7xl mx-auto">
+                    <div class="flex flex-wrap justify-center gap-2 mb-10" id="doctorsFilter"></div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5" id="allDoctorGrid"></div>
+                </div>
+            </section>
+        </div>
+
+        <!-- DOCTOR DETAIL -->
+        <div id="page-doctor-detail" class="page">
+            <section class="relative py-28 px-4 bg-gradient-to-br from-primary-500 to-primary-700" id="doctorDetailHeader">
+                <div class="max-w-7xl mx-auto text-center relative">
+                    <h1 class="text-4xl md:text-5xl font-bold text-white mb-3" id="doctorDetailName">اسم الطبيب</h1>
+                    <p class="text-lg text-white/80" id="doctorDetailSpecialty">التخصص</p>
+                </div>
+            </section>
+            <section class="py-20 px-4">
+                <div class="max-w-5xl mx-auto" id="doctorDetailContent"></div>
+            </section>
+        </div>
+
+        <!-- SERVICES -->
+        <div id="page-services" class="page">
+            <section class="relative py-28 px-4 bg-gradient-to-br from-primary-500 to-primary-700">
+                <div class="max-w-7xl mx-auto text-center relative">
+                    <h1 class="text-4xl md:text-5xl font-bold text-white mb-4">الخدمات الطبية</h1>
+                    <p class="text-lg text-white/80 max-w-xl mx-auto">خدمات طبية متكاملة بأحدث التقنيات العالمية</p>
+                </div>
+            </section>
+            <section class="py-20 px-4">
+                <div class="max-w-7xl mx-auto">
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="allServiceGrid"></div>
+                </div>
+            </section>
+        </div>
+
+        <!-- LAB -->
+        <div id="page-lab" class="page">
+            <section class="relative py-28 px-4 bg-gradient-to-br from-teal-500 to-teal-700">
+                <div class="max-w-7xl mx-auto text-center relative">
+                    <h1 class="text-4xl md:text-5xl font-bold text-white mb-4">المختبر الطبي</h1>
+                    <p class="text-lg text-white/80 max-w-xl mx-auto">تحاليل دقيقة بأحدث الأجهزة والتقنيات</p>
+                </div>
+            </section>
+            <section class="py-20 px-4">
+                <div class="max-w-7xl mx-auto">
+                    <div class="grid lg:grid-cols-2 gap-10 items-center mb-14">
+                        <div class="reveal">
+                            <span class="badge badge-teal mb-3">المختبر</span>
+                            <h2 class="text-3xl font-bold text-primary-500 dark:text-white mb-4">مختبر متطور بمعايير دولية</h2>
+                            <p class="text-gray-600 dark:text-gray-400 leading-relaxed mb-5">يضم مختبرنا أحدث الأجهزة التحليلية المعتمدة دولياً، ويعمل فريق من أفضل الأخصائيين لضمان دقة النتائج.</p>
+                            <ul class="space-y-2">
+                                <li class="flex items-center gap-2 text-gray-700 dark:text-gray-300 text-sm"><svg class="text-teal-500 flex-shrink-0" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg> أكثر من 500 نوع من التحاليل المخبرية</li>
+                                <li class="flex items-center gap-2 text-gray-700 dark:text-gray-300 text-sm"><svg class="text-teal-500 flex-shrink-0" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg> نتائج دقيقة في أسرع وقت</li>
+                                <li class="flex items-center gap-2 text-gray-700 dark:text-gray-300 text-sm"><svg class="text-teal-500 flex-shrink-0" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg> اعتماد دولي CAP</li>
+                                <li class="flex items-center gap-2 text-gray-700 dark:text-gray-300 text-sm"><svg class="text-teal-500 flex-shrink-0" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg> خدمة منزلية للتحاليل</li>
+                            </ul>
+                        </div>
+                        <div class="reveal"><img src="https://images.unsplash.com/photo-1579165466949-3180a3d056d5?w=800&q=80" alt="Lab" class="rounded-3xl shadow-2xl w-full h-80 object-cover" loading="lazy"></div>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+                        <div class="bg-white dark:bg-gray-800 rounded-2xl p-5 shadow border border-gray-100 dark:border-gray-700 reveal">
+                            <div class="w-10 h-10 rounded-lg bg-rose-100 dark:bg-rose-900/20 flex items-center justify-center mb-3 text-rose-500"><svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/></svg></div>
+                            <h4 class="font-bold text-primary-500 dark:text-white mb-1">تحاليل الدم</h4>
+                            <p class="text-gray-500 dark:text-gray-400 text-sm">CBC، تحليل السكر، الدهون، وظائف الكبد</p>
+                        </div>
+                        <div class="bg-white dark:bg-gray-800 rounded-2xl p-5 shadow border border-gray-100 dark:border-gray-700 reveal">
+                            <div class="w-10 h-10 rounded-lg bg-blue-100 dark:bg-blue-900/20 flex items-center justify-center mb-3 text-blue-500"><svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12h20M2 12l5-5m-5 5l5 5"/></svg></div>
+                            <h4 class="font-bold text-primary-500 dark:text-white mb-1">تحاليل الهرمونات</h4>
+                            <p class="text-gray-500 dark:text-gray-400 text-sm">جميع تحاليل الغدد الصماء والهرمونات</p>
+                        </div>
+                        <div class="bg-white dark:bg-gray-800 rounded-2xl p-5 shadow border border-gray-100 dark:border-gray-700 reveal">
+                            <div class="w-10 h-10 rounded-lg bg-teal-100 dark:bg-teal-900/20 flex items-center justify-center mb-3 text-teal-500"><svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M4.9 19.1C1 15.2 1 8.8 4.9 4.9M9 12a3 3 0 1 0 6 0 3 3 0 1 0-6 0M19.1 4.9C23 8.8 23 15.1 19.1 19.1"/></svg></div>
+                            <h4 class="font-bold text-primary-500 dark:text-white mb-1">التحاليل الجينية</h4>
+                            <p class="text-gray-500 dark:text-gray-400 text-sm">فحوصات الوراثة والجينات</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- RADIOLOGY -->
+        <div id="page-radiology" class="page">
+            <section class="relative py-28 px-4 bg-gradient-to-br from-blue-500 to-blue-700">
+                <div class="max-w-7xl mx-auto text-center relative">
+                    <h1 class="text-4xl md:text-5xl font-bold text-white mb-4">قسم الأشعة</h1>
+                    <p class="text-lg text-white/80 max-w-xl mx-auto">تصوير تشخيصي متطور بأحدث الأجهزة</p>
+                </div>
+            </section>
+            <section class="py-20 px-4">
+                <div class="max-w-7xl mx-auto">
+                    <div class="grid lg:grid-cols-2 gap-10 items-center">
+                        <div class="reveal"><img src="https://images.unsplash.com/photo-1516549655169-df83a0774514?w=800&q=80" alt="Radiology" class="rounded-3xl shadow-2xl w-full h-80 object-cover" loading="lazy"></div>
+                        <div class="reveal">
+                            <span class="badge badge-primary mb-3" style="background:rgba(15,43,91,0.1);color:#0F2B5B;">الأشعة</span>
+                            <h2 class="text-3xl font-bold text-primary-500 dark:text-white mb-4">تشخيص دقيق بأحدث التقنيات</h2>
+                            <p class="text-gray-600 dark:text-gray-400 leading-relaxed mb-5">قسم الأشعة لدينا مجهز بأحدث الأجهزة التصويرية العالمية، ويضم نخبة من الاستشاريين المتخصصين.</p>
+                            <div class="grid grid-cols-2 gap-3">
+                                <div class="bg-white dark:bg-gray-800 rounded-xl p-4 shadow border border-gray-100 dark:border-gray-700">
+                                    <svg class="text-blue-500 mb-2" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M2 12h20M12 2v20"/></svg>
+                                    <h4 class="font-bold text-primary-500 dark:text-white text-sm">MRI</h4>
+                                    <p class="text-xs text-gray-500 dark:text-gray-400">رنين مغناطيسي 3 تسلا</p>
+                                </div>
+                                <div class="bg-white dark:bg-gray-800 rounded-xl p-4 shadow border border-gray-100 dark:border-gray-700">
+                                    <svg class="text-teal-500 mb-2" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16v16H4z"/><path d="M4 12h16M12 4v16"/></svg>
+                                    <h4 class="font-bold text-primary-500 dark:text-white text-sm">CT Scan</h4>
+                                    <p class="text-xs text-gray-500 dark:text-gray-400">مقطعية 256 شريحة</p>
+                                </div>
+                                <div class="bg-white dark:bg-gray-800 rounded-xl p-4 shadow border border-gray-100 dark:border-gray-700">
+                                    <svg class="text-rose-500 mb-2" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+                                    <h4 class="font-bold text-primary-500 dark:text-white text-sm">أشعة سينية</h4>
+                                    <p class="text-xs text-gray-500 dark:text-gray-400">رقمية عالية الدقة</p>
+                                </div>
+                                <div class="bg-white dark:bg-gray-800 rounded-xl p-4 shadow border border-gray-100 dark:border-gray-700">
+                                    <svg class="text-gold-500 mb-2" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm0 18a8 8 0 1 1 8-8 8 8 0 0 1-8 8z"/><path d="M12 6v6l4 2"/></svg>
+                                    <h4 class="font-bold text-primary-500 dark:text-white text-sm">أشعة موجات</h4>
+                                    <p class="text-xs text-gray-500 dark:text-gray-400">تصوير تلفزيوني ملون</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- EMERGENCY -->
+        <div id="page-emergency" class="page">
+            <section class="relative py-28 px-4 bg-gradient-to-br from-rose-500 to-rose-700">
+                <div class="max-w-7xl mx-auto text-center relative">
+                    <h1 class="text-4xl md:text-5xl font-bold text-white mb-4">قسم الطوارئ</h1>
+                    <p class="text-lg text-white/80 max-w-xl mx-auto">خدمة طوارئ على مدار 24 ساعة بأعلى مستويات الجاهزية</p>
+                </div>
+            </section>
+            <section class="py-20 px-4">
+                <div class="max-w-7xl mx-auto">
+                    <div class="grid lg:grid-cols-2 gap-10 items-center">
+                        <div class="reveal">
+                            <span class="badge mb-3" style="background:rgba(244,63,94,0.1);color:#f43f5e;">طوارئ 24/7</span>
+                            <h2 class="text-3xl font-bold text-primary-500 dark:text-white mb-4">جاهزون على مدار الساعة</h2>
+                            <p class="text-gray-600 dark:text-gray-400 leading-relaxed mb-5">قسم الطوارئ لدينا مجهز بأحدث الأجهزة الإسعافية والتشخيصية، ويعمل فريق طبي متخصص على مدار 24 ساعة.</p>
+                            <div class="flex items-center gap-4 mb-6 p-4 bg-rose-50 dark:bg-rose-900/20 rounded-xl border border-rose-100 dark:border-rose-900/30">
+                                <div class="w-12 h-12 rounded-full bg-rose-500 flex items-center justify-center text-white"><svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg></div>
+                                <div><div class="text-sm text-gray-500 dark:text-gray-400">رقم الطوارئ</div><div class="text-2xl font-bold text-rose-500">997</div></div>
+                            </div>
+                            <div class="grid grid-cols-2 gap-3">
+                                <div class="flex items-center gap-2 text-gray-700 dark:text-gray-300 text-sm"><svg class="text-rose-500" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> خدمة 24 ساعة</div>
+                                <div class="flex items-center gap-2 text-gray-700 dark:text-gray-300 text-sm"><svg class="text-rose-500" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9l-1.4 2.9A3.7 3.7 0 0 0 2 12v4c0 .6.4 1 1 1h2"/><circle cx="7" cy="17" r="2"/><circle cx="17" cy="17" r="2"/></svg> إسعاف مجهز</div>
+                                <div class="flex items-center gap-2 text-gray-700 dark:text-gray-300 text-sm"><svg class="text-rose-500" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg> عناية مركزة</div>
+                                <div class="flex items-center gap-2 text-gray-700 dark:text-gray-300 text-sm"><svg class="text-rose-500" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg> استجابة فورية</div>
+                            </div>
+                        </div>
+                        <div class="reveal"><img src="https://images.unsplash.com/photo-1587351021759-3e566b2af12c?w=800&q=80" alt="Emergency" class="rounded-3xl shadow-2xl w-full h-80 object-cover" loading="lazy"></div>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- SURGERY -->
+        <div id="page-surgery" class="page">
+            <section class="relative py-28 px-4 bg-gradient-to-br from-primary-500 to-teal-600">
+                <div class="max-w-7xl mx-auto text-center relative">
+                    <h1 class="text-4xl md:text-5xl font-bold text-white mb-4">العمليات الجراحية</h1>
+                    <p class="text-lg text-white/80 max-w-xl mx-auto">جراحة متطورة بأحدث التقنيات الروبوتية والمنظارية</p>
+                </div>
+            </section>
+            <section class="py-20 px-4">
+                <div class="max-w-7xl mx-auto">
+                    <div class="grid lg:grid-cols-2 gap-10 items-center">
+                        <div class="reveal"><img src="https://images.unsplash.com/photo-1551076805-e1869033e561?w=800&q=80" alt="Surgery" class="rounded-3xl shadow-2xl w-full h-80 object-cover" loading="lazy"></div>
+                        <div class="reveal">
+                            <span class="badge badge-teal mb-3">الجراحة</span>
+                            <h2 class="text-3xl font-bold text-primary-500 dark:text-white mb-4">جراحة دقيقة بأحدث التقنيات</h2>
+                            <p class="text-gray-600 dark:text-gray-400 leading-relaxed mb-5">نقدم مجموعة شاملة من العمليات الجراحية باستخدام أحدث التقنيات الروبوتية والمنظارية.</p>
+                            <div class="space-y-3">
+                                <div class="flex items-start gap-3 p-4 bg-white dark:bg-gray-800 rounded-xl shadow border border-gray-100 dark:border-gray-700">
+                                    <div class="w-10 h-10 rounded-lg bg-teal-100 dark:bg-teal-900/20 flex items-center justify-center flex-shrink-0 text-teal-600"><svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg></div>
+                                    <div><h4 class="font-bold text-primary-500 dark:text-white text-sm">الجراحة الروبوتية</h4><p class="text-xs text-gray-500 dark:text-gray-400">دقة فائقة باستخدام الأنظمة الروبوتية</p></div>
+                                </div>
+                                <div class="flex items-start gap-3 p-4 bg-white dark:bg-gray-800 rounded-xl shadow border border-gray-100 dark:border-gray-700">
+                                    <div class="w-10 h-10 rounded-lg bg-blue-100 dark:bg-blue-900/20 flex items-center justify-center flex-shrink-0 text-blue-600"><svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12h20M2 12l5-5m-5 5l5 5"/></svg></div>
+                                    <div><h4 class="font-bold text-primary-500 dark:text-white text-sm">الجراحة المنظارية</h4><p class="text-xs text-gray-500 dark:text-gray-400">جراحة دقيقة بتقنية المنظار بدون شقوق كبيرة</p></div>
+                                </div>
+                                <div class="flex items-start gap-3 p-4 bg-white dark:bg-gray-800 rounded-xl shadow border border-gray-100 dark:border-gray-700">
+                                    <div class="w-10 h-10 rounded-lg bg-rose-100 dark:bg-rose-900/20 flex items-center justify-center flex-shrink-0 text-rose-600"><svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></div>
+                                    <div><h4 class="font-bold text-primary-500 dark:text-white text-sm">جراحة القلب</h4><p class="text-xs text-gray-500 dark:text-gray-400">عمليات قلب مفتوح وقسطرة بأحدث التقنيات</p></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- NEWS -->
+        <div id="page-news" class="page">
+            <section class="relative py-28 px-4 bg-gradient-to-br from-primary-500 to-primary-700">
+                <div class="max-w-7xl mx-auto text-center relative">
+                    <h1 class="text-4xl md:text-5xl font-bold text-white mb-4">الأخبار والمقالات</h1>
+                    <p class="text-lg text-white/80 max-w-xl mx-auto">آخر التطورات الطبية والأخبار الصحية</p>
+                </div>
+            </section>
+            <section class="py-20 px-4">
+                <div class="max-w-7xl mx-auto">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6" id="allNewsGrid"></div>
+                </div>
+            </section>
+        </div>
+
+        <!-- NEWS DETAIL -->
+        <div id="page-news-detail" class="page">
+            <section class="relative py-28 px-4 bg-gradient-to-br from-primary-500 to-primary-700" id="newsDetailHeader">
+                <div class="max-w-7xl mx-auto text-center relative">
+                    <h1 class="text-3xl md:text-4xl font-bold text-white mb-3" id="newsDetailTitle">عنوان الخبر</h1>
+                    <div class="flex items-center justify-center gap-3 text-white/80 text-sm">
+                        <span id="newsDetailDate">التاريخ</span><span>•</span><span id="newsDetailCategory">التصنيف</span>
+                    </div>
+                </div>
+            </section>
+            <section class="py-20 px-4">
+                <div class="max-w-3xl mx-auto" id="newsDetailContent"></div>
+            </section>
+        </div>
+
+        <!-- GALLERY -->
+        <div id="page-gallery" class="page">
+            <section class="relative py-28 px-4 bg-gradient-to-br from-primary-500 to-primary-700">
+                <div class="max-w-7xl mx-auto text-center relative">
+                    <h1 class="text-4xl md:text-5xl font-bold text-white mb-4">معرض الصور</h1>
+                    <p class="text-lg text-white/80 max-w-xl mx-auto">جولة بصرية داخل مرافقنا الطبية</p>
+                </div>
+            </section>
+            <section class="py-20 px-4">
+                <div class="max-w-7xl mx-auto">
+                    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3" id="galleryGrid"></div>
+                </div>
+            </section>
+        </div>
+
+        <!-- VIDEO GALLERY -->
+        <div id="page-video-gallery" class="page">
+            <section class="relative py-28 px-4 bg-gradient-to-br from-primary-500 to-primary-700">
+                <div class="max-w-7xl mx-auto text-center relative">
+                    <h1 class="text-4xl md:text-5xl font-bold text-white mb-4">معرض الفيديو</h1>
+                    <p class="text-lg text-white/80 max-w-xl mx-auto">فيديوهات توعوية وتعريفية</p>
+                </div>
+            </section>
+            <section class="py-20 px-4">
+                <div class="max-w-7xl mx-auto">
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <div class="bg-white dark:bg-gray-800 rounded-2xl overflow-hidden shadow border border-gray-100 dark:border-gray-700 group cursor-pointer reveal">
+                            <div class="relative h-48 bg-gray-900 flex items-center justify-center">
+                                <div class="w-14 h-14 rounded-full bg-white/90 flex items-center justify-center group-hover:scale-110 transition-transform">
+                                    <svg width="24" height="24" fill="currentColor" class="text-primary-500 ml-1"><path d="M8 5v14l11-7z"/></svg>
+                                </div>
+                            </div>
+                            <div class="p-5"><h3 class="font-bold text-primary-500 dark:text-white mb-1">جولة في المستشفى</h3><p class="text-gray-500 dark:text-gray-400 text-sm">تعرف على مرافقنا الطبية المتطورة</p></div>
+                        </div>
+                        <div class="bg-white dark:bg-gray-800 rounded-2xl overflow-hidden shadow border border-gray-100 dark:border-gray-700 group cursor-pointer reveal">
+                            <div class="relative h-48 bg-gray-900 flex items-center justify-center">
+                                <div class="w-14 h-14 rounded-full bg-white/90 flex items-center justify-center group-hover:scale-110 transition-transform">
+                                    <svg width="24" height="24" fill="currentColor" class="text-primary-500 ml-1"><path d="M8 5v14l11-7z"/></svg>
+                                </div>
+                            </div>
+                            <div class="p-5"><h3 class="font-bold text-primary-500 dark:text-white mb-1">نصائح صحية</h3><p class="text-gray-500 dark:text-gray-400 text-sm">نصائح من أطبائنا للحفاظ على صحتك</p></div>
+                        </div>
+                        <div class="bg-white dark:bg-gray-800 rounded-2xl overflow-hidden shadow border border-gray-100 dark:border-gray-700 group cursor-pointer reveal">
+                            <div class="relative h-48 bg-gray-900 flex items-center justify-center">
+                                <div class="w-14 h-14 rounded-full bg-white/90 flex items-center justify-center group-hover:scale-110 transition-transform">
+                                    <svg width="24" height="24" fill="currentColor" class="text-primary-500 ml-1"><path d="M8 5v14l11-7z"/></svg>
+                                </div>
+                            </div>
+                            <div class="p-5"><h3 class="font-bold text-primary-500 dark:text-white mb-1">قصص نجاح</h3><p class="text-gray-500 dark:text-gray-400 text-sm">قصص ملهمة من مرضانا المتعافين</p></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- VIRTUAL TOUR -->
+        <div id="page-virtual-tour" class="page">
+            <section class="relative py-28 px-4 bg-gradient-to-br from-teal-500 to-teal-700">
+                <div class="max-w-7xl mx-auto text-center relative">
+                    <h1 class="text-4xl md:text-5xl font-bold text-white mb-4">جولة افتراضية</h1>
+                    <p class="text-lg text-white/80 max-w-xl mx-auto">تجول في مرافقنا من منزلك</p>
+                </div>
+            </section>
+            <section class="py-20 px-4">
+                <div class="max-w-5xl mx-auto">
+                    <div class="relative rounded-3xl overflow-hidden shadow-2xl bg-gray-900 aspect-video flex items-center justify-center reveal">
+                        <img src="https://images.unsplash.com/photo-1587351021759-3e566b2af12c?w=1200&q=80" alt="Virtual Tour" class="w-full h-full object-cover opacity-50" loading="lazy">
+                        <div class="absolute inset-0 flex flex-col items-center justify-center">
+                            <div class="w-16 h-16 rounded-full bg-white/90 flex items-center justify-center mb-4 cursor-pointer hover:scale-110 transition-transform">
+                                <svg width="28" height="28" fill="currentColor" class="text-primary-500 ml-1"><path d="M8 5v14l11-7z"/></svg>
+                            </div>
+                            <h3 class="text-xl font-bold text-white mb-1">جولة افتراضية 360°</h3>
+                            <p class="text-white/70 text-sm">اضغط للبدء في الجولة الافتراضية</p>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mt-6">
+                        <button class="p-3 rounded-xl bg-white dark:bg-gray-800 shadow border border-gray-100 dark:border-gray-700 text-center hover:border-teal-500 transition-colors reveal"><svg class="text-teal-500 mx-auto mb-1" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg><span class="font-medium text-primary-500 dark:text-white text-sm">الاستقبال</span></button>
+                        <button class="p-3 rounded-xl bg-white dark:bg-gray-800 shadow border border-gray-100 dark:border-gray-700 text-center hover:border-teal-500 transition-colors reveal"><svg class="text-teal-500 mx-auto mb-1" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 4v16"/><path d="M2 8h18a2 2 0 0 1 2 2v10"/><path d="M2 12h7"/><path d="M9 12v8"/></svg><span class="font-medium text-primary-500 dark:text-white text-sm">الغرف</span></button>
+                        <button class="p-3 rounded-xl bg-white dark:bg-gray-800 shadow border border-gray-100 dark:border-gray-700 text-center hover:border-teal-500 transition-colors reveal"><svg class="text-teal-500 mx-auto mb-1" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg><span class="font-medium text-primary-500 dark:text-white text-sm">العناية المركزة</span></button>
+                        <button class="p-3 rounded-xl bg-white dark:bg-gray-800 shadow border border-gray-100 dark:border-gray-700 text-center hover:border-teal-500 transition-colors reveal"><svg class="text-teal-500 mx-auto mb-1" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg><span class="font-medium text-primary-500 dark:text-white text-sm">المطعم</span></button>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- FAQ -->
+        <div id="page-faq" class="page">
+            <section class="relative py-28 px-4 bg-gradient-to-br from-primary-500 to-primary-700">
+                <div class="max-w-7xl mx-auto text-center relative">
+                    <h1 class="text-4xl md:text-5xl font-bold text-white mb-4">الأسئلة الشائعة</h1>
+                    <p class="text-lg text-white/80 max-w-xl mx-auto">إجابات على استفساراتكم الأكثر شيوعاً</p>
+                </div>
+            </section>
+            <section class="py-20 px-4">
+                <div class="max-w-3xl mx-auto" id="faqContainer"></div>
+            </section>
+        </div>
+
+        <!-- CAREERS -->
+        <div id="page-careers" class="page">
+            <section class="relative py-28 px-4 bg-gradient-to-br from-primary-500 to-primary-700">
+                <div class="max-w-7xl mx-auto text-center relative">
+                    <h1 class="text-4xl md:text-5xl font-bold text-white mb-4">الوظائف</h1>
+                    <p class="text-lg text-white/80 max-w-xl mx-auto">انضم إلى فريقنا الطبي المتميز</p>
+                </div>
+            </section>
+            <section class="py-20 px-4">
+                <div class="max-w-5xl mx-auto">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                        <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow border border-gray-100 dark:border-gray-700 card-hover reveal">
+                            <div class="flex justify-between items-start mb-3"><div><h3 class="font-bold text-lg text-primary-500 dark:text-white">استشاري جراحة القلب</h3><p class="text-gray-500 dark:text-gray-400 text-sm">قسم جراحة القلب</p></div><span class="badge badge-teal">دوام كامل</span></div>
+                            <p class="text-gray-600 dark:text-gray-400 text-sm mb-4">نبحث عن استشاري جراحة قلب ذو خبرة لا تقل عن 10 سنوات للانضمام إلى فريقنا.</p>
+                            <div class="flex items-center gap-4 text-xs text-gray-500 dark:text-gray-400 mb-4"><span class="flex items-center gap-1"><svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg> الرياض</span><span class="flex items-center gap-1"><svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> فوري</span></div>
+                            <button class="btn-main w-full justify-center text-sm py-2.5" onclick="showToast('تم إرسال طلبك بنجاح')">تقديم طلب</button>
+                        </div>
+                        <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow border border-gray-100 dark:border-gray-700 card-hover reveal">
+                            <div class="flex justify-between items-start mb-3"><div><h3 class="font-bold text-lg text-primary-500 dark:text-white">أخصائي تمريض</h3><p class="text-gray-500 dark:text-gray-400 text-sm">قسم الطوارئ</p></div><span class="badge badge-teal">دوام كامل</span></div>
+                            <p class="text-gray-600 dark:text-gray-400 text-sm mb-4">مطلوب أخصائي تمريض للعمل في قسم الطوارئ مع خبرة في العناية المركزة.</p>
+                            <div class="flex items-center gap-4 text-xs text-gray-500 dark:text-gray-400 mb-4"><span class="flex items-center gap-1"><svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg> الرياض</span><span class="flex items-center gap-1"><svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> فوري</span></div>
+                            <button class="btn-main w-full justify-center text-sm py-2.5" onclick="showToast('تم إرسال طلبك بنجاح')">تقديم طلب</button>
+                        </div>
+                        <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow border border-gray-100 dark:border-gray-700 card-hover reveal">
+                            <div class="flex justify-between items-start mb-3"><div><h3 class="font-bold text-lg text-primary-500 dark:text-white">فني أشعة</h3><p class="text-gray-500 dark:text-gray-400 text-sm">قسم الأشعة</p></div><span class="badge badge-gold">دوام جزئي</span></div>
+                            <p class="text-gray-600 dark:text-gray-400 text-sm mb-4">مطلوب فني أشعة ذو خبرة في تشغيل أجهزة MRI و CT Scan.</p>
+                            <div class="flex items-center gap-4 text-xs text-gray-500 dark:text-gray-400 mb-4"><span class="flex items-center gap-1"><svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg> الرياض</span><span class="flex items-center gap-1"><svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> خلال شهر</span></div>
+                            <button class="btn-main w-full justify-center text-sm py-2.5" onclick="showToast('تم إرسال طلبك بنجاح')">تقديم طلب</button>
+                        </div>
+                        <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow border border-gray-100 dark:border-gray-700 card-hover reveal">
+                            <div class="flex justify-between items-start mb-3"><div><h3 class="font-bold text-lg text-primary-500 dark:text-white">استقبال</h3><p class="text-gray-500 dark:text-gray-400 text-sm">الإدارة</p></div><span class="badge badge-teal">دوام كامل</span></div>
+                            <p class="text-gray-600 dark:text-gray-400 text-sm mb-4">مطلوب موظف استقبال بخبرة في المجال الطبي ومهارات تواصل عالية.</p>
+                            <div class="flex items-center gap-4 text-xs text-gray-500 dark:text-gray-400 mb-4"><span class="flex items-center gap-1"><svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg> الرياض</span><span class="flex items-center gap-1"><svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> فوري</span></div>
+                            <button class="btn-main w-full justify-center text-sm py-2.5" onclick="showToast('تم إرسال طلبك بنجاح')">تقديم طلب</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- CONTACT -->
+        <div id="page-contact" class="page">
+            <section class="relative py-28 px-4 bg-gradient-to-br from-primary-500 to-primary-700">
+                <div class="max-w-7xl mx-auto text-center relative">
+                    <h1 class="text-4xl md:text-5xl font-bold text-white mb-4">اتصل بنا</h1>
+                    <p class="text-lg text-white/80 max-w-xl mx-auto">نحن هنا لمساعدتك على مدار الساعة</p>
+                </div>
+            </section>
+            <section class="py-20 px-4">
+                <div class="max-w-6xl mx-auto">
+                    <div class="grid lg:grid-cols-2 gap-10">
+                        <div class="reveal">
+                            <h2 class="text-2xl font-bold text-primary-500 dark:text-white mb-5">معلومات التواصل</h2>
+                            <div class="space-y-4 mb-8">
+                                <div class="flex items-start gap-3 p-4 bg-white dark:bg-gray-800 rounded-xl shadow border border-gray-100 dark:border-gray-700">
+                                    <div class="w-10 h-10 rounded-lg bg-primary-100 dark:bg-primary-900/20 flex items-center justify-center text-primary-500 flex-shrink-0"><svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></div>
+                                    <div><h4 class="font-bold text-primary-500 dark:text-white text-sm">العنوان</h4><p class="text-gray-600 dark:text-gray-400 text-sm">شارع الملك فهد، الرياض، المملكة العربية السعودية</p></div>
+                                </div>
+                                <div class="flex items-start gap-3 p-4 bg-white dark:bg-gray-800 rounded-xl shadow border border-gray-100 dark:border-gray-700">
+                                    <div class="w-10 h-10 rounded-lg bg-teal-100 dark:bg-teal-900/20 flex items-center justify-center text-teal-500 flex-shrink-0"><svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg></div>
+                                    <div><h4 class="font-bold text-primary-500 dark:text-white text-sm">الهاتف</h4><p class="text-gray-600 dark:text-gray-400 text-sm">920000000</p></div>
+                                </div>
+                                <div class="flex items-start gap-3 p-4 bg-white dark:bg-gray-800 rounded-xl shadow border border-gray-100 dark:border-gray-700">
+                                    <div class="w-10 h-10 rounded-lg bg-gold-100 dark:bg-yellow-900/20 flex items-center justify-center text-yellow-600 flex-shrink-0"><svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></div>
+                                    <div><h4 class="font-bold text-primary-500 dark:text-white text-sm">البريد الإلكتروني</h4><p class="text-gray-600 dark:text-gray-400 text-sm">info@internationalhospital.com</p></div>
+                                </div>
+                            </div>
+                            <div class="flex gap-3">
+                                <a href="#" class="w-10 h-10 rounded-xl bg-primary-500 text-white flex items-center justify-center hover:bg-primary-600 transition-colors"><svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"/></svg></a>
+                                <a href="#" class="w-10 h-10 rounded-xl bg-blue-600 text-white flex items-center justify-center hover:bg-blue-700 transition-colors"><svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg></a>
+                                <a href="#" class="w-10 h-10 rounded-xl bg-rose-500 text-white flex items-center justify-center hover:bg-rose-600 transition-colors"><svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg></a>
+                                <a href="#" class="w-10 h-10 rounded-xl bg-teal-500 text-white flex items-center justify-center hover:bg-teal-600 transition-colors"><svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg></a>
+                            </div>
+                        </div>
+                        <div class="reveal">
+                            <div class="bg-white dark:bg-gray-800 rounded-3xl p-6 shadow-xl border border-gray-100 dark:border-gray-700">
+                                <h3 class="text-xl font-bold text-primary-500 dark:text-white mb-5">نموذج التواصل</h3>
+                                <form onsubmit="handleContact(event)" class="space-y-4">
+                                    <div class="grid grid-cols-2 gap-3">
+                                        <div><label class="block text-sm font-medium mb-1 text-gray-600 dark:text-gray-400">الاسم</label><input type="text" class="form-input" placeholder="اسمك" required></div>
+                                        <div><label class="block text-sm font-medium mb-1 text-gray-600 dark:text-gray-400">الهاتف</label><input type="tel" class="form-input" placeholder="رقم الهاتف" required></div>
+                                    </div>
+                                    <div><label class="block text-sm font-medium mb-1 text-gray-600 dark:text-gray-400">البريد الإلكتروني</label><input type="email" class="form-input" placeholder="email@example.com" required></div>
+                                    <div><label class="block text-sm font-medium mb-1 text-gray-600 dark:text-gray-400">الموضوع</label><select class="form-input"><option>استفسار عام</option><option>حجز موعد</option><option>شكوى</option><option>اقتراح</option></select></div>
+                                    <div><label class="block text-sm font-medium mb-1 text-gray-600 dark:text-gray-400">الرسالة</label><textarea class="form-input" rows="3" placeholder="اكتب رسالتك..." required></textarea></div>
+                                    <button type="submit" class="btn-main w-full justify-center">إرسال الرسالة</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mt-10 reveal">
+                        <div class="rounded-3xl overflow-hidden shadow-xl border border-gray-200 dark:border-gray-700 h-80 bg-gray-200 dark:bg-gray-800 flex items-center justify-center">
+                            <div class="text-center">
+                                <svg class="text-gray-400 mx-auto mb-3" width="48" height="48" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                                <p class="text-gray-500 dark:text-gray-400 font-medium">خريطة الموقع (Google Maps)</p>
+                                <p class="text-sm text-gray-400 dark:text-gray-500">شارع الملك فهد، الرياض</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- BOOKING -->
+        <div id="page-booking" class="page">
+            <section class="relative py-28 px-4 bg-gradient-to-br from-teal-500 to-teal-700">
+                <div class="max-w-7xl mx-auto text-center relative">
+                    <h1 class="text-4xl md:text-5xl font-bold text-white mb-4">حجز موعد</h1>
+                    <p class="text-lg text-white/80 max-w-xl mx-auto">احجز موعدك بسهولة مع نخبة الأطباء</p>
+                </div>
+            </section>
+            <section class="py-20 px-4">
+                <div class="max-w-xl mx-auto">
+                    <div class="bg-white dark:bg-gray-800 rounded-3xl p-6 md:p-8 shadow-xl border border-gray-100 dark:border-gray-700 reveal">
+                        <form onsubmit="handleBooking(event)">
+                            <div class="space-y-4">
+                                <div><label class="block text-sm font-medium mb-1 text-gray-600 dark:text-gray-400">القسم الطبي</label><select id="bookingPageDept" class="form-input" onchange="updatePageDoctors()"><option value="">اختر القسم</option></select></div>
+                                <div><label class="block text-sm font-medium mb-1 text-gray-600 dark:text-gray-400">الطبيب</label><select id="bookingPageDoctor" class="form-input"><option value="">اختر الطبيب</option></select></div>
+                                <div class="grid grid-cols-2 gap-3">
+                                    <div><label class="block text-sm font-medium mb-1 text-gray-600 dark:text-gray-400">التاريخ</label><input type="date" class="form-input" required></div>
+                                    <div><label class="block text-sm font-medium mb-1 text-gray-600 dark:text-gray-400">الوقت</label><select class="form-input"><option>09:00 ص</option><option>10:00 ص</option><option>11:00 ص</option><option>12:00 م</option><option>01:00 م</option><option>02:00 م</option><option>03:00 م</option><option>04:00 م</option></select></div>
+                                </div>
+                                <div><label class="block text-sm font-medium mb-1 text-gray-600 dark:text-gray-400">الاسم الكامل</label><input type="text" class="form-input" placeholder="أدخل اسمك" required></div>
+                                <div class="grid grid-cols-2 gap-3">
+                                    <div><label class="block text-sm font-medium mb-1 text-gray-600 dark:text-gray-400">رقم الهاتف</label><input type="tel" class="form-input" placeholder="0500000000" required></div>
+                                    <div><label class="block text-sm font-medium mb-1 text-gray-600 dark:text-gray-400">البريد الإلكتروني</label><input type="email" class="form-input" placeholder="example@email.com"></div>
+                                </div>
+                                <div><label class="block text-sm font-medium mb-1 text-gray-600 dark:text-gray-400">ملاحظات</label><textarea class="form-input" rows="2" placeholder="أي ملاحظات..."></textarea></div>
+                                <div class="flex items-center gap-2"><input type="checkbox" id="terms" class="w-4 h-4 rounded border-gray-300 text-teal-500 focus:ring-teal-500" required><label for="terms" class="text-sm text-gray-600 dark:text-gray-400">أوافق على <a href="#" class="text-teal-500 hover:underline">شروط الحجز</a></label></div>
+                            </div>
+                            <button type="submit" class="btn-teal w-full mt-6 justify-center text-lg py-3">تأكيد الحجز</button>
+                        </form>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-primary-500 dark:bg-gray-900 text-white pt-16 pb-6 relative">
+        <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-teal-400 via-gold-500 to-teal-400"></div>
+        <div class="max-w-7xl mx-auto px-4 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 mb-12">
+                <div>
+                    <div class="flex items-center gap-2 mb-4">
+                        <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-teal-400 to-teal-600 flex items-center justify-center text-white"><svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></div>
+                        <div><h3 class="font-bold text-lg">المستشفى الدولي</h3><p class="text-xs text-white/60">رعاية طبية عالمية</p></div>
+                    </div>
+                    <p class="text-white/70 text-sm leading-relaxed mb-4">نقدم رعاية صحية شاملة بأعلى معايير الجودة العالمية، مع كوادر طبية متميزة.</p>
+                    <div class="flex gap-2">
+                        <a href="#" class="w-9 h-9 rounded-lg bg-white/10 flex items-center justify-center hover:bg-white/20 transition-colors"><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"/></svg></a>
+                        <a href="#" class="w-9 h-9 rounded-lg bg-white/10 flex items-center justify-center hover:bg-white/20 transition-colors"><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg></a>
+                        <a href="#" class="w-9 h-9 rounded-lg bg-white/10 flex items-center justify-center hover:bg-white/20 transition-colors"><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg></a>
+                    </div>
+                </div>
+                <div><h4 class="font-bold text-lg mb-4">روابط سريعة</h4><ul class="space-y-2 text-sm"><li><a href="#about" class="text-white/70 hover:text-teal-400 transition-colors">من نحن</a></li><li><a href="#departments" class="text-white/70 hover:text-teal-400 transition-colors">الأقسام الطبية</a></li><li><a href="#doctors" class="text-white/70 hover:text-teal-400 transition-colors">الأطباء</a></li><li><a href="#services" class="text-white/70 hover:text-teal-400 transition-colors">الخدمات</a></li><li><a href="#contact" class="text-white/70 hover:text-teal-400 transition-colors">اتصل بنا</a></li></ul></div>
+                <div><h4 class="font-bold text-lg mb-4">خدماتنا</h4><ul class="space-y-2 text-sm"><li><a href="#emergency" class="text-white/70 hover:text-teal-400 transition-colors">الطوارئ 24/7</a></li><li><a href="#lab" class="text-white/70 hover:text-teal-400 transition-colors">المختبر</a></li><li><a href="#radiology" class="text-white/70 hover:text-teal-400 transition-colors">الأشعة</a></li><li><a href="#surgery" class="text-white/70 hover:text-teal-400 transition-colors">العمليات الجراحية</a></li><li><a href="#booking" class="text-white/70 hover:text-teal-400 transition-colors">حجز موعد</a></li></ul></div>
+                <div>
+                    <h4 class="font-bold text-lg mb-4">معلومات التواصل</h4>
+                    <ul class="space-y-3 text-sm">
+                        <li class="flex items-start gap-2 text-white/70"><svg class="flex-shrink-0 mt-0.5" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg> شارع الملك فهد، الرياض</li>
+                        <li class="flex items-center gap-2 text-white/70"><svg class="flex-shrink-0" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg> 920000000</li>
+                        <li class="flex items-center gap-2 text-white/70"><svg class="flex-shrink-0" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg> info@internationalhospital.com</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="border-t border-white/10 pt-6 flex flex-col md:flex-row justify-between items-center gap-3 text-sm text-white/50">
+                <p>© 2024 المستشفى الدولي. جميع الحقوق محفوظة.</p>
+                <div class="flex gap-4"><a href="#" class="hover:text-white transition-colors">سياسة الخصوصية</a><a href="#" class="hover:text-white transition-colors">شروط الاستخدام</a></div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // ===== DATA =====
+        const departments = [
+            { id: 'cardiology', name: 'القلب', icon: 'heart', desc: 'رعاية شاملة لأمراض القلب والأوعية الدموية', services: ['قسطرة القلب', 'ECG', 'ECHO', 'فحص الإجهاد'], image: 'https://images.unsplash.com/photo-1628348070889-cb656235b4eb?w=600&q=80' },
+            { id: 'neurology', name: 'المخ والأعصاب', icon: 'brain', desc: 'تشخيص وعلاج أمراض الجهاز العصبي', services: ['EEG', 'EMG', 'رنين مغناطيسي', 'علاج الصرع'], image: 'https://images.unsplash.com/photo-1559757175-5700dde675bc?w=600&q=80' },
+            { id: 'orthopedics', name: 'العظام', icon: 'bone', desc: 'علاج إصابات وامراض العظام والمفاصل', services: ['جراحة العظام', 'منظار المفاصل', 'تأهيل رياضي', 'علاج الكسور'], image: 'https://images.unsplash.com/photo-1579684385127-1ef15d508118?w=600&q=80' },
+            { id: 'pediatrics', name: 'الأطفال', icon: 'baby', desc: 'رعاية صحية متكاملة للأطفال', services: ['رعاية حديثي الولادة', 'تطعيمات', 'تغذية', 'نمو وتطور'], image: 'https://images.unsplash.com/photo-1581056771107-24ca5f033842?w=600&q=80' },
+            { id: 'obgyn', name: 'النساء والتوليد', icon: 'users', desc: 'رعاية صحية متخصصة للمرأة', services: ['متابعة الحمل', 'ولادة طبيعية', 'جراحة المناظير', 'علاج العقم'], image: 'https://images.unsplash.com/photo-1559757175-5700dde675bc?w=600&q=80' },
+            { id: 'dermatology', name: 'الجلدية', icon: 'scan', desc: 'علاج أمراض الجلد والتجميل', services: ['علاج حب الشباب', 'ليزر', 'تجميل', 'أمراض جلدية'], image: 'https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=600&q=80' }
+        ];
+
+        const doctors = [
+            { id: 1, name: 'د. أحمد محمد', specialty: 'القلب', title: 'استشاري', experience: 20, image: 'https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=400&q=80', rating: 5, patients: 5000 },
+            { id: 2, name: 'د. سارة عبدالله', specialty: 'المخ والأعصاب', title: 'استشارية', experience: 15, image: 'https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=400&q=80', rating: 5, patients: 3200 },
+            { id: 3, name: 'د. خالد العمري', specialty: 'العظام', title: 'استشاري', experience: 18, image: 'https://images.unsplash.com/photo-1622253692010-333f2da6031d?w=400&q=80', rating: 5, patients: 4500 },
+            { id: 4, name: 'د. فاطمة الزهراني', specialty: 'الأطفال', title: 'استشارية', experience: 12, image: 'https://images.unsplash.com/photo-1594824476967-48c8b964f3a6?w=400&q=80', rating: 5, patients: 6000 },
+            { id: 5, name: 'د. محمد السالم', specialty: 'النساء والتوليد', title: 'استشاري', experience: 22, image: 'https://images.unsplash.com/photo-1537368910025-700350fe46c7?w=400&q=80', rating: 4, patients: 8000 },
+            { id: 6, name: 'د. نورة القحطاني', specialty: 'الجلدية', title: 'أخصائية', experience: 8, image: 'https://images.unsplash.com/photo-1651008376811-b90baee60c1f?w=400&q=80', rating: 5, patients: 2800 },
+            { id: 7, name: 'د. عبدالرحمن الشمري', specialty: 'القلب', title: 'استشاري', experience: 16, image: 'https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=400&q=80', rating: 4, patients: 3500 },
+            { id: 8, name: 'د. ليلى الحربي', specialty: 'العظام', title: 'استشارية', experience: 10, image: 'https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=400&q=80', rating: 5, patients: 4200 }
+        ];
+
+        const services = [
+            { name: 'الاستشارات الطبية', icon: 'stethoscope', desc: 'استشارات متخصصة في جميع التخصصات الطبية' },
+            { name: 'الفحوصات الشاملة', icon: 'clipboard', desc: 'باقات فحص دورية متكاملة لجميع الأعمار' },
+            { name: 'الجراحة الروبوتية', icon: 'bot', desc: 'عمليات دقيقة باستخدام أحدث الأنظمة الروبوتية' },
+            { name: 'العلاج الطبيعي', icon: 'activity', desc: 'برامج تأهيل متخصصة وعلاج طبيعي متقدم' },
+            { name: 'الرعاية المنزلية', icon: 'home', desc: 'خدمات طبية وتمريضية في المنزل' },
+            { name: 'الاستشارات عن بُعد', icon: 'video', desc: 'استشارات طبية عبر الفيديو مع نخبة الأطباء' }
+        ];
+
+        const testimonials = [
+            { name: 'محمد العتيبي', text: 'تجربة رائعة مع المستشفى الدولي. الفريق الطبي محترف جداً والخدمة ممتازة. شكراً لكم على الرعاية المتميزة.', rating: 5, image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&q=80' },
+            { name: 'سارة القحطاني', text: 'أفضل مستشفى تعاملت معه. النظافة ممتازة والأطباء على أعلى مستوى من الكفاءة والأخلاق.', rating: 5, image: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=200&q=80' },
+            { name: 'خالد الدوسري', text: 'سرعة في الحجز ودقة في التشخيص. أنصح الجميع بزيارة هذا المستشفى الرائع.', rating: 4, image: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=200&q=80' }
+        ];
+
+        const news = [
+            { id: 1, title: 'المستشفى الدولي يحصل على اعتماد JCI للمرة الثالثة', date: '2024-05-15', category: 'أخبار', image: 'https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?w=600&q=80', excerpt: 'حقق المستشفى الدولي إنجازاً جديداً بحصوله على اعتماد JCI للمرة الثالثة على التوالي...' },
+            { id: 2, title: 'افتتاح قسم الجراحة الروبوتية المتطور', date: '2024-04-20', category: 'تقنية', image: 'https://images.unsplash.com/photo-1551076805-e1869033e561?w=600&q=80', excerpt: 'تم افتتاح قسم الجراحة الروبوتية بأحدث الأجهزة العالمية لخدمة المرضى...' },
+            { id: 3, title: 'نصائح هامة للحفاظ على صحة القلب في رمضان', date: '2024-03-10', category: 'توعية', image: 'https://images.unsplash.com/photo-1628348070889-cb656235b4eb?w=600&q=80', excerpt: 'ينصح أطباء القلب باتباع نصائح صحية مهمة خلال شهر رمضان المبارك...' }
+        ];
+
+        const galleryImages = [
+            'https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?w=600&q=80',
+            'https://images.unsplash.com/photo-1587351021759-3e566b2af12c?w=600&q=80',
+            'https://images.unsplash.com/photo-1579684385127-1ef15d508118?w=600&q=80',
+            'https://images.unsplash.com/photo-1516549655169-df83a0774514?w=600&q=80',
+            'https://images.unsplash.com/photo-1551076805-e1869033e561?w=600&q=80',
+            'https://images.unsplash.com/photo-1579165466949-3180a3d056d5?w=600&q=80',
+            'https://images.unsplash.com/photo-1581056771107-24ca5f033842?w=600&q=80',
+            'https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=600&q=80'
+        ];
+
+        const faqs = [
+            { q: 'كيف يمكنني حجز موعد في المستشفى؟', a: 'يمكنك حجز موعدك بسهولة عبر موقعنا الإلكتروني أو تطبيق الهاتف، أو الاتصال بمركز الاتصال على الرقم 920000000.' },
+            { q: 'ما هي ساعات عمل المستشفى؟', a: 'المستشفى يعمل من السبت إلى الخميس من 8:00 صباحاً حتى 10:00 مساءً. قسم الطوارئ يعمل على مدار 24 ساعة.' },
+            { q: 'هل يقبل المستشفى التأمين الطبي؟', a: 'نعم، نتعامل مع معظم شركات التأمين الطبي. يمكنك التواصل مع قسم التأمين للتأكد من تغطيتك.' },
+            { q: 'هل هناك خدمة زيارة المنزل؟', a: 'نعم، نوفر خدمة الرعاية المنزلية التي تشمل الزيارات الطبية والتمريضية والعلاج الطبيعي في المنزل.' },
+            { q: 'كيف يمكنني الحصول على تقرير طبي؟', a: 'يمكنك طلب التقرير الطبي من قسم الملفات الطبية في المستشفى أو عبر بوابة المريض الإلكترونية.' },
+            { q: 'هل يوجد موقف سيارات؟', a: 'نعم، يوجد موقف سيارات مجاني للمرضى والزوار بسعة تتسع لأكثر من 500 سيارة.' }
+        ];
+
+        // ===== ROUTING =====
+        function navigateTo(pageId) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            const target = document.getElementById('page-' + pageId);
+            if (target) { target.classList.add('active'); window.scrollTo({ top: 0, behavior: 'smooth' }); }
+            window.location.hash = pageId;
+            closeMobileMenu();
+            setTimeout(initScrollAnimations, 100);
+        }
+
+        document.addEventListener('click', function(e) {
+            const link = e.target.closest('a[href^="#"]');
+            if (link) { e.preventDefault(); navigateTo(link.getAttribute('href').replace('#', '')); }
+        });
+
+        function handleHashChange() {
+            const hash = window.location.hash.replace('#', '') || 'home';
+            navigateTo(hash);
+        }
+
+        // ===== RENDER =====
+        function renderDepartments() {
+            const grid = document.getElementById('deptGrid');
+            const allGrid = document.getElementById('allDeptGrid');
+            const html = departments.map(d => `
+                <div class="dept-card p-5 reveal" onclick="showDeptDetail('${d.id}')">
+                    <div class="flex items-start gap-3">
+                        <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-primary-500 to-teal-500 flex items-center justify-center text-white flex-shrink-0">
+                            <svg width="22" height="22" fill="none" stroke="white" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-lg text-primary-500 dark:text-white mb-1">${d.name}</h3>
+                            <p class="text-gray-500 dark:text-gray-400 text-sm mb-2">${d.desc}</p>
+                            <div class="flex flex-wrap gap-1">
+                                ${d.services.slice(0, 2).map(s => `<span class="text-xs px-2 py-0.5 rounded-full bg-teal-50 dark:bg-teal-900/20 text-teal-600 dark:text-teal-400">${s}</span>`).join('')}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+            if (grid) grid.innerHTML = html;
+            if (allGrid) allGrid.innerHTML = html;
+        }
+
+        function showDeptDetail(id) {
+            const d = departments.find(x => x.id === id);
+            if (!d) return;
+            document.getElementById('deptDetailTitle').textContent = d.name;
+            document.getElementById('deptDetailDesc').textContent = d.desc;
+            document.getElementById('deptDetailContent').innerHTML = `
+                <div class="reveal">
+                    <img src="${d.image}" alt="${d.name}" class="w-full h-72 object-cover rounded-3xl shadow-xl mb-6" loading="lazy">
+                    <div class="grid lg:grid-cols-3 gap-8">
+                        <div class="lg:col-span-2">
+                            <h2 class="text-2xl font-bold text-primary-500 dark:text-white mb-3">عن قسم ${d.name}</h2>
+                            <p class="text-gray-600 dark:text-gray-400 leading-relaxed mb-5">${d.desc}. يضم القسم نخبة من الاستشاريين والأخصائيين ذوي الخبرة العالية.</p>
+                            <h3 class="text-xl font-bold text-primary-500 dark:text-white mb-3">الخدمات المقدمة</h3>
+                            <div class="grid grid-cols-2 gap-3">
+                                ${d.services.map(s => `<div class="flex items-center gap-2 p-3 bg-white dark:bg-gray-800 rounded-lg shadow border border-gray-100 dark:border-gray-700 text-sm"><svg class="text-teal-500 flex-shrink-0" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg><span class="text-gray-700 dark:text-gray-300">${s}</span></div>`).join('')}
+                            </div>
+                        </div>
+                        <div>
+                            <div class="bg-gradient-to-br from-primary-500 to-teal-600 rounded-2xl p-5 text-white">
+                                <h3 class="font-bold text-lg mb-3">معلومات التواصل</h3>
+                                <div class="space-y-2 text-sm">
+                                    <div class="flex items-center gap-2"><svg width="16" height="16" fill="none" stroke="white" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg> 920000000</div>
+                                    <div class="flex items-center gap-2"><svg width="16" height="16" fill="none" stroke="white" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> 24 ساعة</div>
+                                    <div class="flex items-center gap-2"><svg width="16" height="16" fill="none" stroke="white" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg> الدور الثالث</div>
+                                </div>
+                                <button onclick="openBookingModal()" class="w-full mt-4 bg-white text-primary-500 py-2.5 rounded-xl font-bold hover:bg-teal-50 transition-colors text-sm">حجز موعد</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            navigateTo('dept-detail');
+        }
+
+        function renderDoctors() {
+            const grid = document.getElementById('doctorGrid');
+            const allGrid = document.getElementById('allDoctorGrid');
+            const createCard = doc => `
+                <div class="doctor-card reveal" onclick="showDoctorDetail(${doc.id})">
+                    <div class="relative h-60 overflow-hidden">
+                        <img src="${doc.image}" alt="${doc.name}" class="w-full h-full object-cover" loading="lazy">
+                        <div class="absolute inset-0 bg-gradient-to-t from-primary-500/80 to-transparent opacity-0 hover:opacity-100 transition-opacity flex items-end p-4">
+                            <span class="bg-white text-primary-500 px-3 py-1.5 rounded-lg font-bold text-xs">عرض الملف</span>
+                        </div>
+                    </div>
+                    <div class="p-4">
+                        <h3 class="font-bold text-base text-primary-500 dark:text-white mb-1">${doc.name}</h3>
+                        <p class="text-teal-500 text-sm mb-2">${doc.specialty}</p>
+                        <div class="flex items-center gap-1 mb-2">
+                            ${Array(doc.rating).fill().map(() => `<svg width="14" height="14" fill="#D4AF37" stroke="#D4AF37" stroke-width="1"><polygon points="7 1 9 5 13 5 10 8 11 12 7 10 3 12 4 8 1 5 5 5"/></svg>`).join('')}
+                        </div>
+                        <div class="flex items-center justify-between text-xs text-gray-500 dark:text-gray-400">
+                            <span>${doc.experience} سنة خبرة</span>
+                            <span>${doc.patients.toLocaleString()} مريض</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+            if (grid) grid.innerHTML = doctors.slice(0, 4).map(createCard).join('');
+            if (allGrid) allGrid.innerHTML = doctors.map(createCard).join('');
+            
+            const filter = document.getElementById('doctorsFilter');
+            if (filter) {
+                const specs = [...new Set(doctors.map(d => d.specialty))];
+                filter.innerHTML = `<button onclick="filterDoctors('all')" class="px-4 py-2 rounded-full bg-primary-500 text-white text-sm font-medium hover:bg-primary-600 transition-colors">الكل</button>` +
+                    specs.map(s => `<button onclick="filterDoctors('${s}')" class="px-4 py-2 rounded-full bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 text-sm font-medium hover:bg-primary-500 hover:text-white transition-colors">${s}</button>`).join('');
+            }
+        }
+
+        function filterDoctors(spec) {
+            const allGrid = document.getElementById('allDoctorGrid');
+            const filtered = spec === 'all' ? doctors : doctors.filter(d => d.specialty === spec);
+            allGrid.innerHTML = filtered.map(doc => `
+                <div class="doctor-card reveal" onclick="showDoctorDetail(${doc.id})">
+                    <div class="relative h-60 overflow-hidden">
+                        <img src="${doc.image}" alt="${doc.name}" class="w-full h-full object-cover" loading="lazy">
+                        <div class="absolute inset-0 bg-gradient-to-t from-primary-500/80 to-transparent opacity-0 hover:opacity-100 transition-opacity flex items-end p-4">
+                            <span class="bg-white text-primary-500 px-3 py-1.5 rounded-lg font-bold text-xs">عرض الملف</span>
+                        </div>
+                    </div>
+                    <div class="p-4">
+                        <h3 class="font-bold text-base text-primary-500 dark:text-white mb-1">${doc.name}</h3>
+                        <p class="text-teal-500 text-sm mb-2">${doc.specialty}</p>
+                        <div class="flex items-center gap-1 mb-2">
+                            ${Array(doc.rating).fill().map(() => `<svg width="14" height="14" fill="#D4AF37" stroke="#D4AF37" stroke-width="1"><polygon points="7 1 9 5 13 5 10 8 11 12 7 10 3 12 4 8 1 5 5 5"/></svg>`).join('')}
+                        </div>
+                        <div class="flex items-center justify-between text-xs text-gray-500 dark:text-gray-400">
+                            <span>${doc.experience} سنة خبرة</span>
+                            <span>${doc.patients.toLocaleString()} مريض</span>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function showDoctorDetail(id) {
+            const doc = doctors.find(d => d.id === id);
+            if (!doc) return;
+            document.getElementById('doctorDetailName').textContent = doc.name;
+            document.getElementById('doctorDetailSpecialty').textContent = doc.specialty + ' - ' + doc.title;
+            document.getElementById('doctorDetailContent').innerHTML = `
+                <div class="reveal">
+                    <div class="grid lg:grid-cols-3 gap-6 mb-8">
+                        <div class="lg:col-span-1"><img src="${doc.image}" alt="${doc.name}" class="w-full h-80 object-cover rounded-3xl shadow-xl" loading="lazy"></div>
+                        <div class="lg:col-span-2">
+                            <h2 class="text-2xl font-bold text-primary-500 dark:text-white mb-2">${doc.name}</h2>
+                            <p class="text-teal-500 mb-4">${doc.title} ${doc.specialty}</p>
+                            <div class="grid grid-cols-3 gap-3 mb-6">
+                                <div class="bg-white dark:bg-gray-800 rounded-xl p-3 text-center shadow border border-gray-100 dark:border-gray-700"><div class="text-xl font-bold text-primary-500 dark:text-white">${doc.experience}+</div><div class="text-xs text-gray-500 dark:text-gray-400">سنة خبرة</div></div>
+                                <div class="bg-white dark:bg-gray-800 rounded-xl p-3 text-center shadow border border-gray-100 dark:border-gray-700"><div class="text-xl font-bold text-primary-500 dark:text-white">${doc.patients.toLocaleString()}</div><div class="text-xs text-gray-500 dark:text-gray-400">مريض</div></div>
+                                <div class="bg-white dark:bg-gray-800 rounded-xl p-3 text-center shadow border border-gray-100 dark:border-gray-700"><div class="text-xl font-bold text-primary-500 dark:text-white">${doc.rating}</div><div class="text-xs text-gray-500 dark:text-gray-400">تقييم</div></div>
+                            </div>
+                            <h3 class="text-lg font-bold text-primary-500 dark:text-white mb-2">المؤهلات العلمية</h3>
+                            <ul class="space-y-2 mb-5">
+                                <li class="flex items-center gap-2 text-gray-600 dark:text-gray-400 text-sm"><svg class="text-teal-500" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c0 2 3 4 6 4s6-2 6-4v-5"/></svg> بكالوريوس الطب والجراحة - جامعة الملك سعود</li>
+                                <li class="flex items-center gap-2 text-gray-600 dark:text-gray-400 text-sm"><svg class="text-teal-500" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c0 2 3 4 6 4s6-2 6-4v-5"/></svg> زمالة ${doc.specialty} - مستشفى جونز هوبكنز</li>
+                                <li class="flex items-center gap-2 text-gray-600 dark:text-gray-400 text-sm"><svg class="text-teal-500" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="7"/><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"/></svg> شهادة البورد الأمريكي في ${doc.specialty}</li>
+                            </ul>
+                            <button onclick="openBookingModal()" class="btn-main text-sm">احجز موعد مع ${doc.name}</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            navigateTo('doctor-detail');
+        }
+
+        function renderServices() {
+            const grid = document.getElementById('serviceGrid');
+            const allGrid = document.getElementById('allServiceGrid');
+            const html = services.map(s => `
+                <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow border border-gray-100 dark:border-gray-700 card-hover reveal">
+                    <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-primary-500 to-teal-500 flex items-center justify-center mb-4 text-white">
+                        <svg width="22" height="22" fill="none" stroke="white" stroke-width="2"><path d="M4.9 19.1C1 15.2 1 8.8 4.9 4.9M9 12a3 3 0 1 0 6 0 3 3 0 1 0-6 0M19.1 4.9C23 8.8 23 15.1 19.1 19.1"/></svg>
+                    </div>
+                    <h3 class="font-bold text-lg text-primary-500 dark:text-white mb-2">${s.name}</h3>
+                    <p class="text-gray-500 dark:text-gray-400 text-sm leading-relaxed">${s.desc}</p>
+                </div>
+            `).join('');
+            if (grid) grid.innerHTML = html;
+            if (allGrid) allGrid.innerHTML = html;
+        }
+
+        function renderTestimonials() {
+            const grid = document.getElementById('testimonialGrid');
+            if (!grid) return;
+            grid.innerHTML = testimonials.map(t => `
+                <div class="testimonial-card reveal card-hover">
+                    <div class="flex items-center gap-1 mb-3">
+                        ${Array(t.rating).fill().map(() => `<svg width="16" height="16" fill="#D4AF37" stroke="#D4AF37" stroke-width="1"><polygon points="7 1 9 5 13 5 10 8 11 12 7 10 3 12 4 8 1 5 5 5"/></svg>`).join('')}
+                    </div>
+                    <p class="text-gray-600 dark:text-gray-400 leading-relaxed mb-4 text-sm relative z-10">${t.text}</p>
+                    <div class="flex items-center gap-3">
+                        <img src="${t.image}" alt="${t.name}" class="w-10 h-10 rounded-full object-cover" loading="lazy">
+                        <div><div class="font-bold text-primary-500 dark:text-white text-sm">${t.name}</div><div class="text-xs text-gray-500 dark:text-gray-400">مريض</div></div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderNews() {
+            const grid = document.getElementById('newsGrid');
+            const allGrid = document.getElementById('allNewsGrid');
+            const createCard = n => `
+                <div class="news-card reveal" onclick="showNewsDetail(${n.id})">
+                    <div class="relative h-48 overflow-hidden">
+                        <img src="${n.image}" alt="${n.title}" class="w-full h-full object-cover" loading="lazy">
+                        <div class="absolute top-3 right-3"><span class="badge badge-teal text-xs">${n.category}</span></div>
+                    </div>
+                    <div class="p-5">
+                        <div class="flex items-center gap-2 text-xs text-gray-500 dark:text-gray-400 mb-2">
+                            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+                            <span>${n.date}</span>
+                        </div>
+                        <h3 class="font-bold text-base text-primary-500 dark:text-white mb-2 line-clamp-2">${n.title}</h3>
+                        <p class="text-gray-500 dark:text-gray-400 text-sm line-clamp-2">${n.excerpt}</p>
+                    </div>
+                </div>
+            `;
+            if (grid) grid.innerHTML = news.map(createCard).join('');
+            if (allGrid) allGrid.innerHTML = news.map(createCard).join('');
+        }
+
+        function showNewsDetail(id) {
+            const n = news.find(x => x.id === id);
+            if (!n) return;
+            document.getElementById('newsDetailTitle').textContent = n.title;
+            document.getElementById('newsDetailDate').textContent = n.date;
+            document.getElementById('newsDetailCategory').textContent = n.category;
+            document.getElementById('newsDetailContent').innerHTML = `
+                <div class="reveal">
+                    <img src="${n.image}" alt="${n.title}" class="w-full h-72 object-cover rounded-3xl shadow-xl mb-6" loading="lazy">
+                    <p class="text-lg text-gray-600 dark:text-gray-400 leading-relaxed mb-4">${n.excerpt}</p>
+                    <p class="text-gray-600 dark:text-gray-400 leading-relaxed mb-4">في إطار سعينا المستمر لتقديم أفضل الخدمات الطبية، يسرنا أن نعلن عن ${n.title}. يأتي هذا الإنجاز في سياق رؤيتنا الطموحة لأن نكون المؤسسة الصحية الرائدة في المنطقة.</p>
+                    <p class="text-gray-600 dark:text-gray-400 leading-relaxed mb-4">نؤمن بأن الاستثمار في التقنيات الطبية الحديثة والكوادر المتميزة هو السبيل الوحيد لتحقيق رضا مرضانا وتقديم رعاية صحية تفوق توقعاتهم.</p>
+                    <div class="border-r-4 border-teal-500 pr-4 py-2 my-6 bg-teal-50 dark:bg-teal-900/20 rounded-r-xl">
+                        <p class="text-lg italic text-primary-500 dark:text-white">"صحة المجتمع هي استثمارنا الأهم للمستقبل"</p>
+                    </div>
+                    <p class="text-gray-600 dark:text-gray-400 leading-relaxed">ندعو جميع المرضى والزوار للاستفادة من هذه الخدمة الجديدة والتعرف على ما نقدمه من رعاية صحية متكاملة بأعلى معايير الجودة العالمية.</p>
+                </div>
+            `;
+            navigateTo('news-detail');
+        }
+
+        function renderGallery() {
+            const grid = document.getElementById('galleryGrid');
+            if (!grid) return;
+            grid.innerHTML = galleryImages.map((img, i) => `
+                <div class="relative rounded-xl overflow-hidden cursor-pointer group aspect-square reveal" onclick="openLightbox(${i})">
+                    <img src="${img}" alt="Gallery" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" loading="lazy">
+                    <div class="absolute inset-0 bg-primary-500/0 group-hover:bg-primary-500/40 transition-all flex items-center justify-center">
+                        <svg class="text-white opacity-0 group-hover:opacity-100 transition-opacity" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/></svg>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderFAQ() {
+            const container = document.getElementById('faqContainer');
+            if (!container) return;
+            container.innerHTML = faqs.map((f, i) => `
+                <div class="accordion-item reveal">
+                    <div class="accordion-header text-sm md:text-base" onclick="toggleAccordion(this)">
+                        <span class="text-primary-500 dark:text-white">${f.q}</span>
+                        <svg class="accordion-icon text-gray-400 flex-shrink-0" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+                    </div>
+                    <div class="accordion-body"><p class="text-gray-600 dark:text-gray-400 text-sm leading-relaxed">${f.a}</p></div>
+                </div>
+            `).join('');
+        }
+
+        function renderMobileMenu() {
+            const container = document.getElementById('mobileMenuItems');
+            const items = [
+                { label: 'الرئيسية', href: '#home' }, { label: 'من نحن', href: '#about' }, { label: 'الرؤية والرسالة', href: '#vision' },
+                { label: 'الأقسام الطبية', href: '#departments' }, { label: 'الأطباء', href: '#doctors' }, { label: 'الخدمات', href: '#services' },
+                { label: 'المختبر', href: '#lab' }, { label: 'الأشعة', href: '#radiology' }, { label: 'الطوارئ', href: '#emergency' },
+                { label: 'العمليات الجراحية', href: '#surgery' }, { label: 'الأخبار', href: '#news' }, { label: 'معرض الصور', href: '#gallery' },
+                { label: 'معرض الفيديو', href: '#video-gallery' }, { label: 'جولة افتراضية', href: '#virtual-tour' },
+                { label: 'الأسئلة الشائعة', href: '#faq' }, { label: 'الوظائف', href: '#careers' }, { label: 'اتصل بنا', href: '#contact' },
+                { label: 'حجز موعد', href: '#booking' }
+            ];
+            container.innerHTML = items.map(item => `<a href="${item.href}" class="block px-4 py-2.5 rounded-xl text-gray-700 dark:text-gray-300 hover:bg-primary-50 dark:hover:bg-gray-800 hover:text-primary-500 transition-colors font-medium text-sm">${item.label}</a>`).join('');
+        }
+
+        // ===== BOOKING =====
+        function populateBookingSelects() {
+            const selects = [document.getElementById('bookingDept'), document.getElementById('bookingPageDept')];
+            selects.forEach(s => {
+                if (!s) return;
+                s.innerHTML = '<option value="">اختر القسم</option>' + departments.map(d => `<option value="${d.id}">${d.name}</option>`).join('');
+            });
+        }
+
+        function updateBookingDoctors() {
+            const deptId = document.getElementById('bookingDept').value;
+            const select = document.getElementById('bookingDoctor');
+            const dept = departments.find(d => d.id === deptId);
+            const filtered = dept ? doctors.filter(d => d.specialty === dept.name) : doctors;
+            select.innerHTML = '<option value="">اختر الطبيب</option>' + filtered.map(d => `<option value="${d.id}">${d.name}</option>`).join('');
+        }
+
+        function updatePageDoctors() {
+            const deptId = document.getElementById('bookingPageDept').value;
+            const select = document.getElementById('bookingPageDoctor');
+            const dept = departments.find(d => d.id === deptId);
+            const filtered = dept ? doctors.filter(d => d.specialty === dept.name) : doctors;
+            select.innerHTML = '<option value="">اختر الطبيب</option>' + filtered.map(d => `<option value="${d.id}">${d.name}</option>`).join('');
+        }
+
+        function openBookingModal() {
+            document.getElementById('bookingModal').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeBookingModal() {
+            document.getElementById('bookingModal').classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        function handleBooking(e) {
+            e.preventDefault();
+            closeBookingModal();
+            showToast('تم تأكيد حجزك بنجاح! سنتواصل معك قريباً.');
+        }
+
+        function handleContact(e) {
+            e.preventDefault();
+            showToast('تم إرسال رسالتك بنجاح! سنعود إليك في أقرب وقت.');
+        }
+
+        // ===== LIGHTBOX =====
+        let currentImg = 0;
+        function openLightbox(i) { currentImg = i; document.getElementById('lightboxImg').src = galleryImages[i]; document.getElementById('lightbox').classList.add('active'); document.body.style.overflow = 'hidden'; }
+        function closeLightbox() { document.getElementById('lightbox').classList.remove('active'); document.body.style.overflow = ''; }
+        function nextImage() { currentImg = (currentImg + 1) % galleryImages.length; document.getElementById('lightboxImg').src = galleryImages[currentImg]; }
+        function prevImage() { currentImg = (currentImg - 1 + galleryImages.length) % galleryImages.length; document.getElementById('lightboxImg').src = galleryImages[currentImg]; }
+
+        // ===== SEARCH =====
+        function openSearch() { document.getElementById('searchOverlay').classList.add('active'); document.getElementById('searchInput').focus(); document.body.style.overflow = 'hidden'; }
+        function closeSearch() { document.getElementById('searchOverlay').classList.remove('active'); document.body.style.overflow = ''; }
+
+        document.getElementById('searchInput')?.addEventListener('input', function(e) {
+            const q = e.target.value.toLowerCase();
+            const results = document.getElementById('searchResults');
+            if (!q) { results.innerHTML = ''; return; }
+            const matchedDoctors = doctors.filter(d => d.name.includes(q) || d.specialty.includes(q));
+            const matchedDepts = departments.filter(d => d.name.includes(q));
+            let html = '';
+            if (matchedDoctors.length) {
+                html += '<div class="mb-3"><h4 class="text-white/60 text-sm mb-2">الأطباء</h4>';
+                matchedDoctors.forEach(doc => { html += `<div onclick="showDoctorDetail(${doc.id}); closeSearch()" class="flex items-center gap-3 p-3 rounded-xl hover:bg-white/10 cursor-pointer"><img src="${doc.image}" class="w-10 h-10 rounded-full object-cover"><div><div class="text-white font-medium text-sm">${doc.name}</div><div class="text-white/60 text-xs">${doc.specialty}</div></div></div>`; });
+                html += '</div>';
+            }
+            if (matchedDepts.length) {
+                html += '<div><h4 class="text-white/60 text-sm mb-2">الأقسام</h4>';
+                matchedDepts.forEach(dept => { html += `<div onclick="showDeptDetail('${dept.id}'); closeSearch()" class="flex items-center gap-3 p-3 rounded-xl hover:bg-white/10 cursor-pointer"><div class="w-10 h-10 rounded-lg bg-teal-500/20 flex items-center justify-center text-teal-400"><svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></div><div><div class="text-white font-medium text-sm">${dept.name}</div><div class="text-white/60 text-xs">${dept.desc}</div></div></div>`; });
+                html += '</div>';
+            }
+            results.innerHTML = html || '<div class="text-white/60 text-center py-6">لا توجد نتائج</div>';
+        });
+
+        // ===== MOBILE MENU =====
+        function openMobileMenu() { document.getElementById('mobileMenu').classList.add('active'); document.getElementById('mobileOverlay').classList.add('active'); document.body.style.overflow = 'hidden'; }
+        function closeMobileMenu() { document.getElementById('mobileMenu').classList.remove('active'); document.getElementById('mobileOverlay').classList.remove('active'); document.body.style.overflow = ''; }
+
+        // ===== THEME =====
+        function toggleTheme() {
+            document.documentElement.classList.toggle('dark');
+            localStorage.setItem('theme', document.documentElement.classList.contains('dark') ? 'dark' : 'light');
+        }
+        function initTheme() {
+            if (localStorage.getItem('theme') === 'dark' || (!localStorage.getItem('theme') && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                document.documentElement.classList.add('dark');
+            }
+        }
+
+        // ===== LANGUAGE =====
+        function toggleLang() {
+            const isRTL = document.documentElement.dir === 'rtl';
+            document.documentElement.dir = isRTL ? 'ltr' : 'rtl';
+            document.documentElement.lang = isRTL ? 'en' : 'ar';
+            showToast(isRTL ? 'Language changed to English' : 'تم تغيير اللغة إلى العربية');
+        }
+
+        // ===== ACCORDION =====
+        function toggleAccordion(header) {
+            const item = header.parentElement;
+            const wasActive = item.classList.contains('active');
+            document.querySelectorAll('.accordion-item').forEach(i => i.classList.remove('active'));
+            if (!wasActive) item.classList.add('active');
+        }
+
+        // ===== TOAST =====
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toastMsg').textContent = msg;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 3000);
+        }
+
+        // ===== SCROLL ANIMATIONS =====
+        function initScrollAnimations() {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('active');
+                        // Animate counters
+                        const counters = entry.target.querySelectorAll('[data-count]');
+                        counters.forEach(c => animateCounter(c));
+                    }
+                });
+            }, { threshold: 0.1 });
+            document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+        }
+
+        function animateCounter(el) {
+            const target = parseInt(el.dataset.count);
+            if (!target || el.dataset.animated) return;
+            el.dataset.animated = 'true';
+            const duration = 2000, start = performance.now();
+            function update(t) {
+                const p = Math.min((t - start) / duration, 1);
+                const ease = 1 - Math.pow(1 - p, 3);
+                el.textContent = Math.floor(ease * target).toLocaleString() + (target === 98 ? '%' : target > 1000 ? '+' : '');
+                if (p < 1) requestAnimationFrame(update);
+            }
+            requestAnimationFrame(update);
+        }
+
+        // Hero counters
+        function animateHeroCounters() {
+            const counters = [
+                { el: document.getElementById('counter1'), target: 150 },
+                { el: document.getElementById('counter2'), target: 25 },
+                { el: document.getElementById('counter3'), target: 50000 }
+            ];
+            counters.forEach(({ el, target }) => {
+                if (!el) return;
+                const duration = 2000, start = performance.now();
+                function update(t) {
+                    const p = Math.min((t - start) / duration, 1);
+                    const ease = 1 - Math.pow(1 - p, 3);
+                    el.textContent = Math.floor(ease * target).toLocaleString() + (target > 1000 ? '+' : '');
+                    if (p < 1) requestAnimationFrame(update);
+                }
+                requestAnimationFrame(update);
+            });
+        }
+
+        // ===== SCROLL =====
+        function handleScroll() {
+            const navbar = document.getElementById('navbar');
+            const backToTop = document.getElementById('backToTopBtn');
+            if (window.scrollY > 50) navbar.classList.add('shadow-lg'); else navbar.classList.remove('shadow-lg');
+            if (window.scrollY > 400) backToTop.classList.add('visible'); else backToTop.classList.remove('visible');
+        }
+
+        function scrollToTop() { window.scrollTo({ top: 0, behavior: 'smooth' }); }
+
+        // ===== LOADING =====
+        function hideLoading() { setTimeout(() => document.getElementById('loadingScreen').classList.add('hidden'), 1000); }
+
+        // ===== INIT =====
+        document.addEventListener('DOMContentLoaded', function() {
+            initTheme();
+            renderDepartments();
+            renderDoctors();
+            renderServices();
+            renderTestimonials();
+            renderNews();
+            renderGallery();
+            renderFAQ();
+            renderMobileMenu();
+            populateBookingSelects();
+            handleHashChange();
+            initScrollAnimations();
+            hideLoading();
+            setTimeout(animateHeroCounters, 500);
+            window.addEventListener('hashchange', handleHashChange);
+            window.addEventListener('scroll', handleScroll);
+            document.addEventListener('keydown', function(e) { if (e.key === 'Escape') { closeSearch(); closeLightbox(); closeBookingModal(); closeMobileMenu(); } });
+        });
+    </script>
+</body>
+</html>
